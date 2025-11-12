@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - SafeRoute Navigator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+            color: #4F46E5;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            color: #1F2937;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-menu a {
+            color: #6B7280;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #4F46E5;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4F46E5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            background: #EF4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        .logout-btn:hover {
+            background: #DC2626;
+        }
+        
+        .main-content {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        
+        .analytics-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .analytics-title h1 {
+            font-size: 2.5rem;
+            color: #1F2937;
+        }
+        
+        .analytics-title .subtitle {
+            color: #6B7280;
+            font-size: 1.1rem;
+        }
+        
+        .analytics-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .control-group label {
+            color: #374151;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .form-select, .form-input {
+            padding: 0.5rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .form-select:focus, .form-input:focus {
+            outline: none;
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: #4F46E5;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #4338CA;
+        }
+        
+        .btn-secondary {
+            background: #F3F4F6;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background: #E5E7EB;
+        }
+        
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .analytics-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-header h2 {
+            color: #1F2937;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 1rem 0;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-icon.routes { color: #4F46E5; }
+        .stat-icon.safety { color: #10B981; }
+        .stat-icon.hotspots { color: #F59E0B; }
+        .stat-icon.users { color: #8B5CF6; }
+        .stat-icon.distance { color: #EF4444; }
+        .stat-icon.incidents { color: #F97316; }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #6B7280;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .stat-change {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        
+        .stat-change.positive {
+            color: #10B981;
+        }
+        
+        .stat-change.negative {
+            color: #EF4444;
+        }
+        
+        .filters-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .heatmap-container {
+            height: 400px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .analytics-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .analytics-controls {
+                justify-content: center;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <h1>SafeRoute Navigator</h1>
+            </div>
+            <nav class="nav-menu">
+                <a href="/">Map</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/analytics" class="active">Analytics</a>
+                <a href="/profile">Profile</a>
+                <a href="/settings">Settings</a>
+                <a href="/admin">Admin</a>
+            </nav>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <span id="userName">Loading...</span>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <!-- Analytics Header -->
+        <div class="analytics-header">
+            <div class="analytics-title">
+                <div>
+                    <h1><i class="fas fa-chart-bar"></i> Advanced Analytics</h1>
+                    <p class="subtitle">Comprehensive safety and route analytics with interactive insights</p>
+                </div>
+            </div>
+            <div class="analytics-controls">
+                <div class="control-group">
+                    <label>Time Range:</label>
+                    <select id="timeRange" class="form-select" onchange="updateAnalytics()">
+                        <option value="7d">Last 7 days</option>
+                        <option value="30d" selected>Last 30 days</option>
+                        <option value="90d">Last 90 days</option>
+                        <option value="1y">Last year</option>
+                    </select>
+                </div>
+                <div>
+                    <button class="btn btn-secondary" onclick="exportData('pdf')">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
+                    <button class="btn btn-primary" onclick="showAdvancedFilters()">
+                        <i class="fas fa-filter"></i> Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Advanced Filters Panel -->
+        <div id="filtersPanel" class="filters-panel" style="display: none;">
+            <h3 style="margin-bottom: 1rem;"><i class="fas fa-sliders-h"></i> Advanced Filters</h3>
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>City/Region:</label>
+                    <select id="cityFilter" class="form-select">
+                        <option value="all">All Cities</option>
+                        <option value="delhi">Delhi</option>
+                        <option value="mumbai">Mumbai</option>
+                        <option value="bangalore">Bangalore</option>
+                        <option value="chennai">Chennai</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Route Type:</label>
+                    <select id="routeTypeFilter" class="form-select">
+                        <option value="all">All Types</option>
+                        <option value="fastest">Fastest</option>
+                        <option value="safest">Safest</option>
+                        <option value="balanced">Balanced</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <button class="btn btn-primary" onclick="applyFilters()">
+                        <i class="fas fa-search"></i> Apply
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Key Metrics Overview -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <i class="fas fa-route stat-icon routes"></i>
+                <div class="stat-value" id="totalRoutes">15,420</div>
+                <div class="stat-label">Total Routes</div>
+                <div class="stat-change positive">+12% from last month</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-shield-alt stat-icon safety"></i>
+                <div class="stat-value" id="avgSafety">8.2</div>
+                <div class="stat-label">Avg Safety Score</div>
+                <div class="stat-change positive">+5.2% improvement</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-exclamation-triangle stat-icon hotspots"></i>
+                <div class="stat-value" id="activeHotspots">34</div>
+                <div class="stat-label">Active Hotspots</div>
+                <div class="stat-change negative">-8% from last week</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-users stat-icon users"></i>
+                <div class="stat-value" id="activeUsers">8,950</div>
+                <div class="stat-label">Active Users</div>
+                <div class="stat-change positive">+25% new users</div>
+            </div>
+        </div>
+        
+        <!-- Analytics Charts Grid -->
+        <div class="analytics-grid">
+            <!-- Route Usage Trends -->
+            <div class="analytics-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-line"></i> Route Usage Trends</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="routeUsageChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Safety Analytics -->
+            <div class="analytics-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-shield-check"></i> Safety Distribution</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="safetyDistributionChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Geographic Heatmap -->
+            <div class="analytics-section full-width">
+                <div class="section-header">
+                    <h2><i class="fas fa-map-marked-alt"></i> Geographic Risk Heatmap</h2>
+                </div>
+                <div class="heatmap-container" id="heatmapContainer">
+                    <div id="analyticsMap"></div>
+                </div>
+            </div>
+            
+            <!-- Time-based Patterns -->
+            <div class="analytics-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-clock"></i> Hourly Usage Pattern</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="timePatternsChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- User Behavior Analysis -->
+            <div class="analytics-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-users"></i> Route Preferences</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="userBehaviorChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        class AdvancedAnalytics {
+            constructor() {
+                this.charts = {};
+                this.map = null;
+                this.init();
+            }
+            
+            async init() {
+                await this.loadUserInfo();
+                this.initializeCharts();
+                this.initializeMap();
+            }
+            
+            async loadUserInfo() {
+                try {
+                    const response = await fetch('/api/auth/user');
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        const user = data.user;
+                        document.getElementById('userName').textContent = user.username;
+                        document.getElementById('userAvatar').textContent = user.full_name.charAt(0).toUpperCase();
+                    } else {
+                        window.location.href = '/login';
+                    }
+                } catch (error) {
+                    console.error('Error loading user info:', error);
+                    window.location.href = '/login';
+                }
+            }
+            
+            initializeCharts() {
+                this.createRouteUsageChart();
+                this.createSafetyDistributionChart();
+                this.createTimePatternsChart();
+                this.createUserBehaviorChart();
+            }
+            
+            createRouteUsageChart() {
+                const ctx = document.getElementById('routeUsageChart').getContext('2d');
+                this.charts.routeUsage = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: this.generateDateLabels(30),
+                        datasets: [
+                            {
+                                label: 'Routes Calculated',
+                                data: this.generateRandomData(30, 50, 200),
+                                borderColor: '#4F46E5',
+                                backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                                fill: true,
+                                tension: 0.4
+                            },
+                            {
+                                label: 'Unique Users',
+                                data: this.generateRandomData(30, 20, 80),
+                                borderColor: '#10B981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                fill: false,
+                                tension: 0.4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        }
+                    }
+                });
+            }
+            
+            createSafetyDistributionChart() {
+                const ctx = document.getElementById('safetyDistributionChart').getContext('2d');
+                this.charts.safetyDistribution = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['High (8.0+)', 'Medium (6.0-8.0)', 'Low (<6.0)'],
+                        datasets: [{
+                            data: [68, 25, 7],
+                            backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.label}: ${context.parsed}%`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            createTimePatternsChart() {
+                const ctx = document.getElementById('timePatternsChart').getContext('2d');
+                const hourlyData = Array.from({length: 24}, (_, i) => {
+                    if (i === 8 || i === 9 || i === 18 || i === 19) {
+                        return Math.random() * 50 + 80;
+                    } else if (i >= 7 && i <= 10 || i >= 17 && i <= 20) {
+                        return Math.random() * 30 + 50;
+                    } else {
+                        return Math.random() * 20 + 10;
+                    }
+                });
+                
+                this.charts.timePatterns = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                        datasets: [{
+                            label: 'Route Requests',
+                            data: hourlyData,
+                            backgroundColor: '#7C3AED',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+            
+            createUserBehaviorChart() {
+                const ctx = document.getElementById('userBehaviorChart').getContext('2d');
+                this.charts.userBehavior = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Fastest Route', 'Safest Route', 'Balanced', 'Shortest Distance'],
+                        datasets: [{
+                            data: [45, 30, 20, 5],
+                            backgroundColor: ['#EF4444', '#10B981', '#F59E0B', '#8B5CF6'],
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.label}: ${context.parsed}%`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            initializeMap() {
+                this.map = L.map('analyticsMap').setView([28.6139, 77.2090], 11);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(this.map);
+                
+                // Add sample heatmap data points
+                this.addHeatmapData();
+            }
+            
+            addHeatmapData() {
+                const heatmapPoints = [
+                    [28.6139, 77.2090, 0.8], // Delhi
+                    [28.5355, 77.3910, 0.6], // Noida
+                    [28.4595, 77.0266, 0.9], // Gurgaon
+                    [28.7041, 77.1025, 0.7], // North Delhi
+                    [28.5244, 77.1855, 0.5], // South Delhi
+                ];
+                
+                heatmapPoints.forEach(point => {
+                    const intensity = point[2];
+                    const color = intensity > 0.7 ? '#EF4444' : intensity > 0.4 ? '#F59E0B' : '#10B981';
+                    
+                    L.circleMarker([point[0], point[1]], {
+                        radius: intensity * 20,
+                        fillColor: color,
+                        color: color,
+                        weight: 2,
+                        opacity: 0.7,
+                        fillOpacity: 0.4
+                    }).addTo(this.map).bindPopup(`Risk Level: ${(intensity * 100).toFixed(0)}%`);
+                });
+            }
+            
+            // Utility functions
+            generateDateLabels(days) {
+                const labels = [];
+                const now = new Date();
+                for (let i = days - 1; i >= 0; i--) {
+                    const date = new Date(now);
+                    date.setDate(date.getDate() - i);
+                    labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                }
+                return labels;
+            }
+            
+            generateRandomData(length, min, max) {
+                return Array.from({length}, () => Math.floor(Math.random() * (max - min + 1)) + min);
+            }
+        }
+        
+        // Global functions for UI interactions
+        function updateAnalytics() {
+            console.log('Updating analytics with new time range');
+        }
+        
+        function showAdvancedFilters() {
+            const panel = document.getElementById('filtersPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function applyFilters() {
+            console.log('Applying advanced filters');
+        }
+        
+        function exportData(format) {
+            alert(`Export to ${format.toUpperCase()} would be implemented here`);
+        }
+        
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+            }
+        }
+        
+        // Initialize analytics when DOM is loaded
+        let analytics;
+        document.addEventListener('DOMContentLoaded', () => {
+            analytics = new AdvancedAnalytics();
+        });
+    </script>
+</body>
+</html>

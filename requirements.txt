@@ -1,0 +1,28 @@
+# SafeRoute Navigator v2.0 - Python Dependencies
+# Core web framework
+Flask==3.0.0
+Flask-CORS==4.0.0
+
+# Data processing and analysis (versions compatible with Python 3.13)
+pandas>=2.2.2,<2.4
+numpy>=2.0,<3
+
+# Machine learning (compatible with Python 3.13)
+scikit-learn>=1.5.0,<1.7
+
+# HTTP requests for weather API
+requests>=2.31.0
+
+# Additional utilities that might be needed
+python-dateutil==2.8.2
+pytz==2023.3
+
+# Development and testing (optional but recommended)
+pytest==7.4.3
+pytest-flask==1.3.0
+
+# Logging and configuration
+python-dotenv==1.0.0
+
+# JSON handling (usually built-in, but ensuring compatibility)
+# ujson==5.8.0  # Commented out as it might cause issues on some systems

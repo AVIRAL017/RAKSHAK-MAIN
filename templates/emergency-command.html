@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Command Center - RAKSHAK</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Leaflet MarkerCluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Global Layout Fixes -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global-fixes.css') }}">
+    
+    <!-- Modern Theme -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-modern.css') }}">
+    
+    <!-- Design System CSS (legacy support) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/design-system.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    
+    <style>
+        .command-center-wrapper {
+            display: flex;
+            height: calc(100vh - 70px);
+            overflow: hidden;
+        }
+        
+        .command-sidebar {
+            width: 400px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .command-map-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        #commandMap {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .command-tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .command-tab {
+            flex: 1;
+            padding: 12px 16px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+        }
+        
+        .command-tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .command-tab:hover {
+            background: #fafafa;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .resource-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .resource-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .resource-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .resource-id {
+            font-weight: 700;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-available {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-on-duty {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-emergency {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-deployed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .resource-details {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .resource-actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-btn.dispatch {
+            background: #667eea;
+            color: white;
+        }
+        
+        .action-btn.dispatch:hover {
+            background: #5568d3;
+        }
+        
+        .action-btn.track {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .action-btn.track:hover {
+            background: #e67e22;
+        }
+        
+        .action-btn.recall {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .action-btn.recall:hover {
+            background: #7f8c8d;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .dispatch-form {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 12px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .map-legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .legend-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .filter-section {
+            background: #f8f9fa;
+            padding: 12px;
+            margin-bottom: 16px;
+            border-radius: 6px;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .filter-row:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body class="page-wrapper">
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>RAKSHAK</h1>
+                </div>
+                <nav class="nav-menu">
+                    <a href="/">Map</a>
+                    <a href="/dashboard">Dashboard</a>
+                    <a href="/emergency-command" class="active">Emergency Command</a>
+                    <a href="/analytics">Analytics</a>
+                    <a href="/admin">Admin</a>
+                </nav>
+                <div class="user-info">
+                    <div class="user-avatar">A</div>
+                    <span>Admin User</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Command Center Content -->
+    <div class="command-center-wrapper">
+        <!-- Sidebar -->
+        <div class="command-sidebar">
+            <!-- Tabs -->
+            <div class="command-tabs">
+                <button class="command-tab active" data-tab="ambulances">
+                    <i class="fas fa-ambulance"></i><br>Ambulances
+                </button>
+                <button class="command-tab" data-tab="police">
+                    <i class="fas fa-shield-alt"></i><br>Police
+                </button>
+                <button class="command-tab" data-tab="ndrf">
+                    <i class="fas fa-life-ring"></i><br>NDRF
+                </button>
+                <button class="command-tab" data-tab="relief">
+                    <i class="fas fa-box"></i><br>Relief
+                </button>
+            </div>
+
+            <!-- Ambulances Tab -->
+            <div class="tab-content active" id="ambulances-tab">
+                <div class="stats-grid">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);">
+                        <div class="stat-value" id="ambulances-available">0</div>
+                        <div class="stat-label">Available</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #ffa500 0%, #e67e22 100%);">
+                        <div class="stat-value" id="ambulances-on-duty">0</div>
+                        <div class="stat-label">On Duty</div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-row">
+                        <select id="ambulance-status-filter" style="flex: 1;">
+                            <option value="all">All Status</option>
+                            <option value="available">Available</option>
+                            <option value="on-duty">On Duty</option>
+                            <option value="emergency">Emergency</option>
+                        </select>
+                        <select id="ambulance-city-filter" style="flex: 1;">
+                            <option value="all">All Cities</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Mumbai">Mumbai</option>
+                            <option value="Bangalore">Bangalore</option>
+                            <option value="Chennai">Chennai</option>
+                            <option value="Hyderabad">Hyderabad</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="ambulances-list"></div>
+            </div>
+
+            <!-- Police Tab -->
+            <div class="tab-content" id="police-tab">
+                <div class="stats-grid">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">
+                        <div class="stat-value" id="police-available">0</div>
+                        <div class="stat-label">Units Ready</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+                        <div class="stat-value" id="police-deployed">0</div>
+                        <div class="stat-label">Deployed</div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-row">
+                        <select id="police-city-filter" style="flex: 1;">
+                            <option value="all">All Cities</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Mumbai">Mumbai</option>
+                            <option value="Bangalore">Bangalore</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="police-list"></div>
+            </div>
+
+            <!-- NDRF Tab -->
+            <div class="tab-content" id="ndrf-tab">
+                <div class="stats-grid">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);">
+                        <div class="stat-value" id="ndrf-teams">0</div>
+                        <div class="stat-label">Teams</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);">
+                        <div class="stat-value" id="ndrf-personnel">0</div>
+                        <div class="stat-label">Personnel</div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-row">
+                        <select id="ndrf-specialization-filter" style="flex: 1;">
+                            <option value="all">All Specializations</option>
+                            <option value="flood">Flood Rescue</option>
+                            <option value="earthquake">Earthquake</option>
+                            <option value="fire">Fire & Hazmat</option>
+                            <option value="mountain">Mountain Rescue</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="ndrf-list"></div>
+            </div>
+
+            <!-- Relief Equipment Tab -->
+            <div class="tab-content" id="relief-tab">
+                <div class="stats-grid">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #16a085 0%, #138d75 100%);">
+                        <div class="stat-value" id="relief-warehouses">0</div>
+                        <div class="stat-label">Warehouses</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);">
+                        <div class="stat-value" id="relief-supplies">0</div>
+                        <div class="stat-label">Supply Points</div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-row">
+                        <select id="relief-type-filter" style="flex: 1;">
+                            <option value="all">All Types</option>
+                            <option value="medical">Medical Supplies</option>
+                            <option value="food">Food & Water</option>
+                            <option value="shelter">Shelter Materials</option>
+                            <option value="equipment">Equipment</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="relief-list"></div>
+            </div>
+        </div>
+
+        <!-- Map Container -->
+        <div class="command-map-container">
+            <div id="commandMap"></div>
+            
+            <div class="map-legend">
+                <h4 style="margin: 0 0 12px 0; font-size: 14px;">Map Legend</h4>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #f39c12;">
+                        <i class="fas fa-ambulance"></i>
+                    </div>
+                    <span>Ambulances</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #3498db;">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <span>Police Units</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #f39c12;">
+                        <i class="fas fa-life-ring"></i>
+                    </div>
+                    <span>NDRF Teams</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #16a085;">
+                        <i class="fas fa-warehouse"></i>
+                    </div>
+                    <span>Relief Centers</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #e74c3c;">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <span>Hospitals</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #ff6b6b;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <span>Hotspots</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dispatch Modal -->
+    <div class="modal" id="dispatchModal" style="display: none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content" style="max-width: 600px; margin: 50px auto;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
+                <h3 style="margin: 0;"><i class="fas fa-paper-plane"></i> Dispatch Resource</h3>
+                <button class="modal-close" id="closeDispatchModal" style="position: absolute; right: 20px; top: 20px; background: none; border: none; color: white; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 24px;">
+                <form id="dispatchForm">
+                    <div class="form-group">
+                        <label>Resource ID</label>
+                        <input type="text" id="dispatch-resource-id" readonly style="background: #f5f5f5;">
+                    </div>
+                    <div class="form-group">
+                        <label>Dispatch Type</label>
+                        <select id="dispatch-type" required>
+                            <option value="">Select dispatch type</option>
+                            <option value="accident">Road Accident</option>
+                            <option value="medical">Medical Emergency</option>
+                            <option value="flood">Flood Response</option>
+                            <option value="fire">Fire Emergency</option>
+                            <option value="earthquake">Earthquake</option>
+                            <option value="law-enforcement">Law Enforcement</option>
+                            <option value="relief">Relief Distribution</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <select id="dispatch-priority" required>
+                            <option value="critical">Critical</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Location (Click on map or enter coordinates)</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="dispatch-lat" placeholder="Latitude" step="any" required style="flex: 1;">
+                            <input type="number" id="dispatch-lng" placeholder="Longitude" step="any" required style="flex: 1;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="dispatch-notes" rows="3" placeholder="Additional information..."></textarea>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button type="button" id="cancelDispatch" style="padding: 10px 20px; background: #95a5a6; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                            Cancel
+                        </button>
+                        <button type="submit" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            <i class="fas fa-paper-plane"></i> Dispatch Now
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script src="{{ url_for('static', filename='js/config.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/emergency-command.js') }}"></script>
+    {% include 'components/emergency_footer.html' %}
+</body>
+</html>

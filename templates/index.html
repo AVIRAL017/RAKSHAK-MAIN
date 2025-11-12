@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAKSHAK - AI-Powered Route Safety</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Global Layout Fixes -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global-fixes.css') }}">
+    
+    <!-- Modern Theme -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-modern.css') }}">
+    
+    <!-- Design System CSS (legacy support) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/design-system.css') }}">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body class="page-wrapper">
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>RAKSHAK</h1>
+                </div>
+                <nav class="nav-menu">
+                    <a href="/" class="active">Map</a>
+                    <a href="/dashboard">Dashboard</a>
+                    <a href="/emergency-command" style="color: #e74c3c; font-weight: 600;">
+                        <i class="fas fa-ambulance"></i> Emergency Command
+                    </a>
+                    <a href="/analytics">Analytics</a>
+                    <a href="/profile">Profile</a>
+                    <a href="/settings">Settings</a>
+                    <a href="/help">Help</a>
+                </nav>
+                <div class="user-info">
+                    <div class="user-avatar">G</div>
+                    <span>Guest User</span>
+                    <a href="/login" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Map and Sidebar Layout -->
+            <div class="grid grid-auto" style="grid-template-columns: 300px 1fr; gap: var(--space-lg);">
+                <!-- Sidebar -->
+                <div class="d-flex" style="flex-direction: column; gap: var(--space-lg);" id="sidebar">
+                    <!-- Weather Panel -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-cloud-sun"></i>
+                                Weather Conditions
+                            </h3>
+                            <button class="btn btn-secondary" data-target="weatherContent">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div class="card-body" id="weatherContent">
+                            <div class="weather-current" id="weatherCurrent" style="display: flex; flex-direction: column; gap: 12px;">
+                                <!-- Horizontal main weather info -->
+                                <div class="weather-main" style="display: flex; align-items: center; gap: 15px; padding: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; color: white;">
+                                    <div class="weather-icon" style="font-size: 48px; min-width: 60px; text-align: center;">
+                                        <i class="fas fa-sun"></i>
+                                    </div>
+                                    <div class="weather-info" style="flex: 1;">
+                                        <div class="temperature" style="font-size: 32px; font-weight: bold; margin: 0;">25°C</div>
+                                        <div class="description" style="font-size: 16px; opacity: 0.9;">Loading...</div>
+                                        <div class="feels-like" style="font-size: 14px; opacity: 0.8;">Feels like 27°C</div>
+                                    </div>
+                                </div>
+                                <!-- Horizontal weather details -->
+                                <div class="weather-details" style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+                                    <div class="detail-item" style="flex: 1; min-width: 80px; text-align: center; padding: 8px; background: #f8f9fa; border-radius: 6px;">
+                                        <span class="label" style="display: block; font-size: 12px; color: #666; margin-bottom: 4px;">Humidity</span>
+                                        <span class="value" id="humidity" style="display: block; font-size: 16px; font-weight: bold; color: #333;">--%</span>
+                                    </div>
+                                    <div class="detail-item" style="flex: 1; min-width: 80px; text-align: center; padding: 8px; background: #f8f9fa; border-radius: 6px;">
+                                        <span class="label" style="display: block; font-size: 12px; color: #666; margin-bottom: 4px;">Wind</span>
+                                        <span class="value" id="windSpeed" style="display: block; font-size: 16px; font-weight: bold; color: #333;">-- km/h</span>
+                                    </div>
+                                    <div class="detail-item" style="flex: 1; min-width: 80px; text-align: center; padding: 8px; background: #f8f9fa; border-radius: 6px;">
+                                        <span class="label" style="display: block; font-size: 12px; color: #666; margin-bottom: 4px;">Visibility</span>
+                                        <span class="value" id="visibility" style="display: block; font-size: 16px; font-weight: bold; color: #333;">-- km</span>
+                                    </div>
+                                </div>
+                                <!-- Horizontal driving conditions -->
+                                <div class="driving-conditions" id="drivingConditions" style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #e8f5e9; border-radius: 6px; border-left: 4px solid #4caf50;">
+                                    <div class="risk-indicator" style="display: flex; align-items: center; gap: 10px;">
+                                        <span class="risk-label" style="font-weight: 600; color: #333;">Driving Risk:</span>
+                                        <span class="risk-value low" id="drivingRisk" style="padding: 4px 12px; background: #4caf50; color: white; border-radius: 12px; font-weight: bold; font-size: 14px;">Low</span>
+                                    </div>
+                                    <div class="recommendations" id="weatherRecommendations" style="flex: 1; text-align: right;">
+                                        <small style="color: #555;">Good conditions for driving</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hotspots Panel -->
+                    <div class="panel hotspots-panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Safety Hotspots</h3>
+                            <button class="toggle-btn" data-target="hotspotsContent">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div class="panel-content" id="hotspotsContent">
+                            <div class="hotspots-filters">
+                                <select id="hotspotFilter">
+                                    <option value="all">All Types</option>
+                                    <option value="accident_prone">Accident Prone</option>
+                                    <option value="traffic_congestion">Traffic Congestion</option>
+                                    <option value="construction">Construction</option>
+                                    <option value="flooding_risk">Flooding Risk</option>
+                                    <option value="weather_risk">Weather Risk</option>
+                                    <option value="pedestrian_risk">Pedestrian Risk</option>
+                                </select>
+                                <select id="riskFilter">
+                                    <option value="all">All Risk Levels</option>
+                                    <option value="very_high">Very High</option>
+                                    <option value="high">High</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="low">Low</option>
+                                </select>
+                            </div>
+                            <div class="hotspots-list" id="hotspotsList">
+                                <div class="loading">Loading hotspots...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Legend Panel -->
+                    <div class="panel legend-panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-info-circle"></i> Map Legend</h3>
+                            <button class="toggle-btn" data-target="legendContent">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div class="panel-content" id="legendContent">
+                            <div class="legend-items">
+                                <div class="legend-item">
+                                    <div class="legend-color risk-very-high"></div>
+                                    <span>Very High Risk</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color risk-high"></div>
+                                    <span>High Risk</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color risk-medium"></div>
+                                    <span>Medium Risk</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color risk-low"></div>
+                                    <span>Low Risk</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Container -->
+                <div class="map-container">
+                    <div id="map" class="map"></div>
+                    <div class="map-controls">
+                        <button class="map-control-btn" id="toggleSidebar" title="Toggle Sidebar">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <button class="map-control-btn" id="centerMap" title="Center Map">
+                            <i class="fas fa-crosshairs"></i>
+                        </button>
+                        <button class="map-control-btn" id="toggleFullscreen" title="Toggle Fullscreen">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                        <button class="map-control-btn" id="reportIncident" title="Report Incident" style="background: #e74c3c; color: white;">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </button>
+                    </div>
+                    <div class="map-loading" id="mapLoading" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Loading map data...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notifications Container -->
+    <div class="notifications" id="notifications"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner large"></div>
+            <h3>RAKSHAK</h3>
+            <p id="loadingText">Initializing application...</p>
+        </div>
+    </div>
+
+    <!-- Incident Reporting Modal -->
+    <div class="modal" id="incidentModal" style="display: none;">
+        <div class="modal-overlay" id="incidentModalOverlay"></div>
+        <div class="modal-content" style="max-width: 500px; margin: 50px auto; background: white; border-radius: 12px; padding: 0; position: relative; z-index: 10001; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+            <div class="modal-header" style="padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px 12px 0 0;">
+                <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Report Safety Incident
+                </h3>
+                <button class="modal-close" id="closeIncidentModal" style="position: absolute; right: 20px; top: 20px; background: none; border: none; color: white; font-size: 24px; cursor: pointer; line-height: 1;">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 24px;">
+                <form id="incidentForm">
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #333;">Incident Type *</label>
+                        <select id="incidentType" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+                            <option value="">Select incident type</option>
+                            <option value="accident">Accident</option>
+                            <option value="road_hazard">Road Hazard</option>
+                            <option value="construction">Construction</option>
+                            <option value="flooding">Flooding</option>
+                            <option value="poor_visibility">Poor Visibility</option>
+                            <option value="traffic_jam">Traffic Jam</option>
+                            <option value="vehicle_breakdown">Vehicle Breakdown</option>
+                            <option value="pedestrian_incident">Pedestrian Incident</option>
+                            <option value="animal_crossing">Animal Crossing</option>
+                            <option value="pothole">Pothole</option>
+                            <option value="debris">Debris on Road</option>
+                            <option value="signal_malfunction">Signal Malfunction</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #333;">Severity *</label>
+                        <select id="incidentSeverity" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+                            <option value="">Select severity</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #333;">Location</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="incidentLat" placeholder="Latitude" step="any" required style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+                            <input type="number" id="incidentLng" placeholder="Longitude" step="any" required style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+                        </div>
+                        <button type="button" id="useMapLocation" style="margin-top: 8px; padding: 6px 12px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;">
+                            <i class="fas fa-crosshairs"></i> Use Map Center
+                        </button>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #333;">Description</label>
+                        <textarea id="incidentDescription" rows="3" placeholder="Provide additional details about the incident..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <div class="form-actions" style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button type="button" id="cancelIncidentReport" style="padding: 10px 20px; background: #95a5a6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            Cancel
+                        </button>
+                        <button type="submit" id="submitIncidentReport" style="padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            <i class="fas fa-paper-plane"></i> Submit Report
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Navigation and Page Management -->
+    <script src="{{ url_for('static', filename='js/navigation.js') }}"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/config.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/weather.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/hotspots.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/routes.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/emergency-layers.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/incidents.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% include 'components/emergency_footer.html' %}
+</body>
+</html>

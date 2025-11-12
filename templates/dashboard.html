@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - RAKSHAK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global-fixes.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-modern.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: #4F46E5;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            color: #1F2937;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: #6B7280;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-menu a:hover {
+            color: #4F46E5;
+        }
+        
+        .nav-menu a.emergency {
+            color: #EF4444;
+            font-weight: 600;
+        }
+        
+        .nav-menu a.emergency:hover {
+            color: #DC2626;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4F46E5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: #EF4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #DC2626;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .welcome-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card.routes i {
+            color: #4F46E5;
+        }
+
+        .stat-card.safety i {
+            color: #10B981;
+        }
+
+        .stat-card.savings i {
+            color: #F59E0B;
+        }
+
+        .stat-card.streak i {
+            color: #EF4444;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .quick-actions {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-actions h2 {
+            margin-bottom: 1.5rem;
+            color: #1F2937;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .action-btn i {
+            font-size: 2rem;
+        }
+    </style>
+</head>
+<body class="page-wrapper">
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <h1>SafeRoute Navigator</h1>
+            </div>
+            <nav class="nav-menu">
+                <a href="/">Map</a>
+                <a href="/emergency-command" class="emergency">
+                    <i class="fas fa-ambulance"></i> Emergency Command
+                </a>
+                <a href="/analytics">Analytics</a>
+                <a href="/settings">Settings</a>
+            </nav>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <span id="userName">Loading...</span>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="welcome-section">
+            <h1>Welcome back, <span id="welcomeName">User</span>!</h1>
+            <p style="color: #6B7280; margin-top: 0.5rem;">Here's your SafeRoute Navigator dashboard with your latest activity and statistics.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card routes">
+                <i class="fas fa-map-marked-alt"></i>
+                <div class="stat-value" id="stat-total-hotspots">0</div>
+                <div class="stat-label">Total Hotspots</div>
+            </div>
+            <div class="stat-card safety">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div class="stat-value" id="stat-high-risk">0</div>
+                <div class="stat-label">High Risk Areas</div>
+            </div>
+            <div class="stat-card savings">
+                <i class="fas fa-city"></i>
+                <div class="stat-value" id="stat-cities">0</div>
+                <div class="stat-label">Cities Monitored</div>
+            </div>
+            <div class="stat-card streak">
+                <i class="fas fa-chart-line"></i>
+                <div class="stat-value" id="stat-avg-risk">0.0</div>
+                <div class="stat-label">Average Risk Level</div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+            <div class="actions-grid">
+                <a href="/" class="action-btn">
+                    <i class="fas fa-route"></i>
+                    Plan Route
+                </a>
+                <a href="/analytics" class="action-btn">
+                    <i class="fas fa-chart-line"></i>
+                    View Analytics
+                </a>
+                <a href="/settings" class="action-btn">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+                <a href="/profile" class="action-btn">
+                    <i class="fas fa-user"></i>
+                    Profile
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Load user information
+        async function loadUserInfo() {
+            try {
+                const res = await fetch('/api/auth/user');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.status === 'success' && data.user) {
+                        const name = data.user.full_name || data.user.username || 'User';
+                        document.getElementById('userName').textContent = name;
+                        document.getElementById('welcomeName').textContent = name.split(' ')[0];
+                        document.getElementById('userAvatar').textContent = (name[0] || 'U').toUpperCase();
+                    } else {
+                        document.getElementById('userName').textContent = 'User';
+                        document.getElementById('welcomeName').textContent = 'User';
+                        document.getElementById('userAvatar').textContent = 'U';
+                    }
+                }
+            } catch (e) {
+                console.warn('Could not fetch user info');
+            }
+            
+            await loadDashboardStats();
+        }
+        
+        // Load dashboard statistics
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch('/api/stats/dashboard');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const stats = data.data;
+                    updateDashboardStats(stats);
+                } else {
+                    console.error('Failed to load dashboard stats:', data.message);
+                }
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+        
+        // Update dashboard statistics display
+        function updateDashboardStats(stats) {
+            if (stats) {
+                document.getElementById('stat-total-hotspots').textContent = stats.total_hotspots || '0';
+                document.getElementById('stat-high-risk').textContent = stats.high_risk || '0';
+                document.getElementById('stat-cities').textContent = stats.cities || '0';
+                document.getElementById('stat-avg-risk').textContent = stats.avg_risk || '0.0';
+                
+                console.log('Dashboard statistics loaded:', stats);
+                if (stats.severity_breakdown) {
+                    console.log('Severity breakdown:', stats.severity_breakdown);
+                }
+                if (stats.top_cities) {
+                    console.log('Top cities:', stats.top_cities);
+                }
+            }
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('/api/auth/logout', { method: 'POST' });
+                if (response.ok) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+            }
+        }
+
+        // Load user info when page loads
+        document.addEventListener('DOMContentLoaded', loadUserInfo);
+    </script>
+    {% include 'components/emergency_footer.html' %}
+</body>
+</html>

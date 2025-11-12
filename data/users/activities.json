@@ -1,0 +1,36 @@
+{
+  "demo_user": {
+    "routes": [
+      {
+        "timestamp": "2025-10-15T12:09:29.495612",
+        "from": "Unknown",
+        "to": "Unknown",
+        "distance_km": 1552.46,
+        "duration_minutes": 1189.1,
+        "safety_score": "Good",
+        "route_type": "balanced"
+      },
+      {
+        "timestamp": "2025-10-15T12:10:20.195580",
+        "from": "Mumbai, India",
+        "to": "Pune, India",
+        "distance_km": 0,
+        "duration_minutes": 0,
+        "safety_score": "N/A",
+        "route_type": "balanced"
+      }
+    ],
+    "total_distance": 1552.46,
+    "total_time_saved": 0,
+    "safety_scores": [
+      7.5
+    ],
+    "route_types": {
+      "balanced": 2
+    },
+    "activity_days": [
+      "2025-10-15"
+    ],
+    "member_since": "2025-10-15T12:09:29.495610"
+  }
+}

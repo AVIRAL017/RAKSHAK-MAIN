@@ -1,0 +1,246 @@
+<!-- Emergency Contacts Footer -->
+<footer class="emergency-footer">
+    <div class="emergency-container">
+        <h3><i class="fas fa-phone-alt"></i> Emergency Contacts - India</h3>
+        <div class="emergency-grid">
+            <div class="emergency-contact">
+                <div class="contact-icon police">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name">Police</div>
+                    <a href="tel:100" class="contact-number">100</a>
+                </div>
+            </div>
+            
+            <div class="emergency-contact">
+                <div class="contact-icon fire">
+                    <i class="fas fa-fire-extinguisher"></i>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name">Fire</div>
+                    <a href="tel:101" class="contact-number">101</a>
+                </div>
+            </div>
+            
+            <div class="emergency-contact">
+                <div class="contact-icon ambulance">
+                    <i class="fas fa-ambulance"></i>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name">Ambulance</div>
+                    <a href="tel:108" class="contact-number">108</a>
+                </div>
+            </div>
+            
+            <div class="emergency-contact">
+                <div class="contact-icon emergency">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name">Emergency</div>
+                    <a href="tel:112" class="contact-number">112</a>
+                </div>
+            </div>
+            
+            <div class="emergency-contact">
+                <div class="contact-icon women">
+                    <i class="fas fa-female"></i>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name">Women Helpline</div>
+                    <a href="tel:1091" class="contact-number">1091</a>
+                </div>
+            </div>
+            
+            <div class="emergency-contact">
+                <div class="contact-icon disaster">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name">Disaster Management</div>
+                    <a href="tel:108" class="contact-number">108</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-note">
+            <i class="fas fa-info-circle"></i>
+            <p>For any emergency, dial the appropriate number immediately. These services are available 24/7 across India.</p>
+        </div>
+        <div class="footer-note" style="margin-top: 0.75rem;">
+            <i class="fas fa-heartbeat"></i>
+            <p><strong>Harnessing data to save lives</strong></p>
+        </div>
+    </div>
+</footer>
+
+<style>
+.emergency-footer {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    padding: 2rem 1rem;
+    margin-top: 3rem;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.emergency-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.emergency-footer h3 {
+    text-align: center;
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+    color: #fff;
+    font-weight: 700;
+}
+
+.emergency-footer h3 i {
+    margin-right: 0.5rem;
+    color: #f39c12;
+}
+
+.emergency-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.emergency-contact {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.emergency-contact:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.contact-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.contact-icon.police {
+    background: #3498db;
+}
+
+.contact-icon.fire {
+    background: #e74c3c;
+}
+
+.contact-icon.ambulance {
+    background: #f39c12;
+}
+
+.contact-icon.emergency {
+    background: #e67e22;
+}
+
+.contact-icon.women {
+    background: #9b59b6;
+}
+
+.contact-icon.disaster {
+    background: #16a085;
+}
+
+.contact-info {
+    flex: 1;
+}
+
+.contact-name {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.contact-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    display: block;
+    transition: color 0.2s;
+}
+
+.contact-number:hover {
+    color: #f39c12;
+}
+
+.footer-note {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.footer-note i {
+    color: #f39c12;
+    font-size: 1.25rem;
+}
+
+.footer-note p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .emergency-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .emergency-footer h3 {
+        font-size: 1.5rem;
+    }
+    
+    .emergency-contact {
+        padding: 1rem;
+    }
+    
+    .contact-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.25rem;
+    }
+    
+    .contact-number {
+        font-size: 1.25rem;
+    }
+    
+    .footer-note {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .emergency-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>

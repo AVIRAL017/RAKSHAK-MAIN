@@ -1,0 +1,412 @@
+<!-- Map Legend Component -->
+<div class="map-legend" id="mapLegend">
+    <div class="legend-header">
+        <h4><i class="fas fa-info-circle"></i> Map Legend</h4>
+        <button class="legend-toggle" onclick="toggleLegend()">
+            <i class="fas fa-chevron-down"></i>
+        </button>
+    </div>
+    <div class="legend-content">
+        <!-- Hotspot Risk Levels -->
+        <div class="legend-section">
+            <h5>Hotspot Risk Levels</h5>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <span class="legend-marker" style="background: #22c55e;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </span>
+                    <span class="legend-label">Low Risk</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-marker" style="background: #f59e0b;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </span>
+                    <span class="legend-label">Medium Risk</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-marker" style="background: #ef4444;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </span>
+                    <span class="legend-label">High Risk</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-marker" style="background: #991b1b;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </span>
+                    <span class="legend-label">Critical Risk</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Services -->
+        <div class="legend-section">
+            <h5>Emergency Services</h5>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <span class="legend-marker" style="background: #e74c3c;">
+                        <i class="fas fa-hospital"></i>
+                    </span>
+                    <span class="legend-label">Hospitals</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-marker" style="background: #3498db;">
+                        <i class="fas fa-shield-alt"></i>
+                    </span>
+                    <span class="legend-label">Police Stations</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-marker" style="background: #f39c12;">
+                        <i class="fas fa-ambulance"></i>
+                    </span>
+                    <span class="legend-label">Ambulances</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-marker" style="background: #e67e22;">
+                        <i class="fas fa-fire-extinguisher"></i>
+                    </span>
+                    <span class="legend-label">Fire Stations</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location Markers -->
+        <div class="legend-section">
+            <h5>Location Markers</h5>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <span class="legend-marker user-location">
+                        <div class="pulse-dot"></div>
+                    </span>
+                    <span class="legend-label">Your Location</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-marker" style="background: #10b981;">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </span>
+                    <span class="legend-label">Start Point</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-marker" style="background: #ef4444;">
+                        <i class="fas fa-flag-checkered"></i>
+                    </span>
+                    <span class="legend-label">Destination</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Route Lines -->
+        <div class="legend-section">
+            <h5>Routes</h5>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <span class="legend-line" style="border-color: #22c55e;"></span>
+                    <span class="legend-label">Safe Route</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-line" style="border-color: #f59e0b;"></span>
+                    <span class="legend-label">Moderate Route</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-line" style="border-color: #ef4444;"></span>
+                    <span class="legend-label">High Risk Route</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- My Location Button -->
+<button class="my-location-btn" id="myLocationBtn" onclick="handleMyLocation()" title="Show my location">
+    <i class="fas fa-crosshairs"></i>
+</button>
+
+<style>
+/* Map Legend Styles */
+.map-legend {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    max-width: 280px;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.legend-header {
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #4F46E5, #6366F1);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.legend-header h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.legend-header i.fa-info-circle {
+    margin-right: 8px;
+}
+
+.legend-toggle {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 4px;
+    font-size: 0.9rem;
+    transition: transform 0.3s;
+}
+
+.legend-toggle:hover {
+    opacity: 0.8;
+}
+
+.legend-content {
+    max-height: 400px;
+    overflow-y: auto;
+    transition: max-height 0.3s ease;
+}
+
+.map-legend.collapsed .legend-content {
+    max-height: 0;
+    overflow: hidden;
+}
+
+.map-legend.collapsed .legend-toggle i {
+    transform: rotate(-90deg);
+}
+
+.legend-section {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.legend-section:last-child {
+    border-bottom: none;
+}
+
+.legend-section h5 {
+    margin: 0 0 10px 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #4b5563;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: #374151;
+}
+
+.legend-marker {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+}
+
+.legend-marker.user-location {
+    background: #4F46E5;
+    position: relative;
+}
+
+.pulse-dot {
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+}
+
+.pulse-dot::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(79, 70, 229, 0.4);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(2); opacity: 0; }
+}
+
+.legend-line {
+    width: 30px;
+    height: 0;
+    border: 2px solid;
+    border-radius: 1px;
+    flex-shrink: 0;
+}
+
+.legend-label {
+    font-weight: 500;
+}
+
+/* My Location Button */
+.my-location-btn {
+    position: absolute;
+    top: 80px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s;
+}
+
+.my-location-btn:hover {
+    background: #4F46E5;
+    border-color: #4F46E5;
+    color: white;
+    transform: scale(1.05);
+}
+
+.my-location-btn:active {
+    transform: scale(0.95);
+}
+
+.my-location-btn.loading {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Scrollbar Styling */
+.legend-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.legend-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.legend-content::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.legend-content::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .map-legend {
+        bottom: 10px;
+        right: 10px;
+        max-width: 240px;
+    }
+    
+    .legend-section {
+        padding: 10px 12px;
+    }
+    
+    .my-location-btn {
+        top: 70px;
+        right: 10px;
+        width: 36px;
+        height: 36px;
+    }
+}
+</style>
+
+<script>
+function toggleLegend() {
+    const legend = document.getElementById('mapLegend');
+    if (legend) {
+        legend.classList.toggle('collapsed');
+    }
+}
+
+async function handleMyLocation() {
+    const btn = document.getElementById('myLocationBtn');
+    
+    if (!btn) return;
+    
+    // Add loading state
+    btn.classList.add('loading');
+    btn.disabled = true;
+    
+    try {
+        // Check if SafeRouteMap is available
+        if (window.SafeRouteMap && window.SafeRouteMap.locateUser) {
+            await window.SafeRouteMap.locateUser({
+                zoom: 15,
+                showMarker: true,
+                centerMap: true
+            });
+        } else if (window.EmergencyCommand && window.EmergencyCommand.map) {
+            // For Emergency Command page
+            if (!navigator.geolocation) {
+                alert('Geolocation is not supported by your browser');
+                return;
+            }
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    window.EmergencyCommand.map.setView([lat, lng], 15);
+                    
+                    // Add user location marker
+                    L.marker([lat, lng], {
+                        icon: L.divIcon({
+                            html: '<div style="background: #4F46E5; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>',
+                            className: '',
+                            iconSize: [20, 20]
+                        })
+                    }).addTo(window.EmergencyCommand.map)
+                      .bindPopup('Your Location')
+                      .openPopup();
+                },
+                (error) => {
+                    alert('Unable to get your location: ' + error.message);
+                }
+            );
+        } else {
+            console.error('Map instance not found');
+            alert('Map is not initialized yet');
+        }
+    } catch (error) {
+        console.error('Location error:', error);
+    } finally {
+        // Remove loading state
+        btn.classList.remove('loading');
+        btn.disabled = false;
+    }
+}
+</script>

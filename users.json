@@ -1,0 +1,126 @@
+{
+  "jcuPgYD9Eq653rJq6uBOKg": {
+    "id": "jcuPgYD9Eq653rJq6uBOKg",
+    "email": "admin@saferoute.com",
+    "username": "admin",
+    "full_name": "Admin User",
+    "role": "admin",
+    "is_active": true,
+    "is_verified": true,
+    "created_at": "2025-10-12T18:12:40.188861",
+    "last_login": "2025-11-04T09:13:51.837468",
+    "preferences": {
+      "route_type": "balanced",
+      "vehicle_type": "car",
+      "avoid_tolls": false,
+      "avoid_highways": false,
+      "risk_tolerance": "medium",
+      "notifications": {
+        "weather_alerts": true,
+        "traffic_updates": true,
+        "safety_warnings": true,
+        "route_suggestions": true
+      },
+      "privacy": {
+        "share_location": false,
+        "anonymous_analytics": true,
+        "data_retention": "1year"
+      }
+    },
+    "profile_picture": null,
+    "password_hash": "05145a946d5f5c5ff6c2d1595265ce3c:a64b3373dd659dabfae5cdd59b4510e86a8f5de3d2ae1f15becb0122b4fdc3cc"
+  },
+  "F-WB_QFUgQOzx-d6UllO_g": {
+    "id": "F-WB_QFUgQOzx-d6UllO_g",
+    "email": "user@saferoute.com",
+    "username": "demouser",
+    "full_name": "Demo User",
+    "role": "user",
+    "is_active": true,
+    "is_verified": true,
+    "created_at": "2025-10-12T18:12:40.253014",
+    "last_login": "2025-11-05T06:19:14.237936",
+    "preferences": {
+      "route_type": "balanced",
+      "vehicle_type": "car",
+      "avoid_tolls": false,
+      "avoid_highways": false,
+      "risk_tolerance": "medium",
+      "notifications": {
+        "weather_alerts": true,
+        "traffic_updates": true,
+        "safety_warnings": true,
+        "route_suggestions": true
+      },
+      "privacy": {
+        "share_location": false,
+        "anonymous_analytics": true,
+        "data_retention": "1year"
+      }
+    },
+    "profile_picture": null,
+    "password_hash": "049ddaceae2a7809c0c66164ff6e98bf:8f2fc35b4e017129008a3b2f4e8f504401f9b0687f112b5cd4c852848478a438"
+  },
+  "h7AqRK05TmaNjRV5gPQN9A": {
+    "id": "h7AqRK05TmaNjRV5gPQN9A",
+    "email": "2k24.csaiml1b.2412667@gmail.com",
+    "username": "ishaan470",
+    "full_name": "ishaan verma",
+    "role": "user",
+    "is_active": true,
+    "is_verified": false,
+    "created_at": "2025-10-15T06:31:21.885450",
+    "last_login": "2025-10-15T06:31:29.544341",
+    "preferences": {
+      "route_type": "balanced",
+      "vehicle_type": "car",
+      "avoid_tolls": false,
+      "avoid_highways": false,
+      "risk_tolerance": "medium",
+      "notifications": {
+        "weather_alerts": true,
+        "traffic_updates": true,
+        "safety_warnings": true,
+        "route_suggestions": true
+      },
+      "privacy": {
+        "share_location": false,
+        "anonymous_analytics": true,
+        "data_retention": "1year"
+      }
+    },
+    "profile_picture": null,
+    "password_hash": "2e222cf255e18163a946923c8a969272:38e2be066be8ba47a5dfb6a0ac6673a24789605b14c2c6eb0ce659b1f15d7b10"
+  },
+  "y7MhgdkgIcjkoetCsP_xaw": {
+    "id": "y7MhgdkgIcjkoetCsP_xaw",
+    "email": "ayushkanojia222@gmail.com",
+    "username": "AVIRAL@017",
+    "full_name": "AVIRAL .",
+    "role": "user",
+    "is_active": true,
+    "is_verified": false,
+    "created_at": "2025-11-04T12:39:54.356796",
+    "last_login": "2025-11-04T12:40:02.290021",
+    "preferences": {
+      "route_type": "balanced",
+      "vehicle_type": "car",
+      "avoid_tolls": false,
+      "avoid_highways": false,
+      "risk_tolerance": "medium",
+      "notifications": {
+        "weather_alerts": true,
+        "traffic_updates": true,
+        "safety_warnings": true,
+        "route_suggestions": true
+      },
+      "privacy": {
+        "share_location": false,
+        "anonymous_analytics": true,
+        "data_retention": "1year"
+      }
+    },
+    "profile_picture": null,
+    "password_hash": "9d724ee1f95d985efbff6c9c0e246e12:a602c6d6482b9c32d6a12725fcf6cad3c67290d07fdfe0075a7c7ddb663335bb"
+  }
+}

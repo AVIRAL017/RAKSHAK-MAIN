@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeRoute Navigator v2.0 - AI-Powered Route Safety</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>SafeRoute Navigator <span class="version">v2.0</span></h1>
+                    <p class="tagline">AI-Powered Route Safety Intelligence</p>
+                </div>
+                <div class="header-status">
+                    <div class="status-indicator" id="connectionStatus">
+                        <i class="fas fa-wifi"></i>
+                        <span>Connected</span>
+                    </div>
+                    <div class="weather-summary" id="weatherSummary">
+                        <i class="fas fa-cloud-sun"></i>
+                        <span>Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <div class="search-section">
+                    <div class="route-inputs">
+                        <div class="input-group">
+                            <label for="fromLocation">
+                                <i class="fas fa-map-marker-alt from-marker"></i>
+                                From
+                            </label>
+                            <input type="text" 
+                                   id="fromLocation" 
+                                   placeholder="Enter starting location..."
+                                   autocomplete="off">
+                            <button class="location-btn" id="useCurrentLocation" title="Use current location">
+                                <i class="fas fa-crosshairs"></i>
+                            </button>
+                        </div>
+                        <div class="input-group">
+                            <label for="toLocation">
+                                <i class="fas fa-map-marker-alt to-marker"></i>
+                                To
+                            </label>
+                            <input type="text" 
+                                   id="toLocation" 
+                                   placeholder="Enter destination..."
+                                   autocomplete="off">
+                        </div>
+                        <button class="search-btn" id="findRoute">
+                            <i class="fas fa-route"></i>
+                            Find Safe Route
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Options Panel -->
+                <div class="options-panel">
+                    <div class="route-options">
+                        <div class="option-group">
+                            <label>Route Type:</label>
+                            <select id="routeType">
+                                <option value="safest">Safest Route</option>
+                                <option value="fastest">Fastest Route</option>
+                                <option value="balanced" selected>Balanced</option>
+                            </select>
+                        </div>
+                        <div class="option-group">
+                            <label>Vehicle Type:</label>
+                            <select id="vehicleType">
+                                <option value="car" selected>Car</option>
+                                <option value="motorcycle">Motorcycle</option>
+                                <option value="truck">Truck</option>
+                                <option value="bicycle">Bicycle</option>
+                            </select>
+                        </div>
+                        <div class="option-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="avoidTolls">
+                                <span class="checkmark"></span>
+                                Avoid Tolls
+                            </label>
+                        </div>
+                        <div class="option-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="avoidHighways">
+                                <span class="checkmark"></span>
+                                Avoid Highways
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map and Sidebar Layout -->
+            <div class="map-layout">
+                <!-- Sidebar -->
+                <div class="sidebar" id="sidebar">
+                    <!-- Weather Panel -->
+                    <div class="panel weather-panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-cloud-sun"></i> Weather Conditions</h3>
+                            <button class="toggle-btn" data-target="weatherContent">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div class="panel-content" id="weatherContent">
+                            <div class="weather-current" id="weatherCurrent">
+                                <div class="weather-main">
+                                    <div class="weather-icon">
+                                        <i class="fas fa-sun"></i>
+                                    </div>
+                                    <div class="weather-info">
+                                        <div class="temperature">25°C</div>
+                                        <div class="description">Loading...</div>
+                                        <div class="feels-like">Feels like 27°C</div>
+                                    </div>
+                                </div>
+                                <div class="weather-details">
+                                    <div class="detail-item">
+                                        <span class="label">Humidity</span>
+                                        <span class="value" id="humidity">--%</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="label">Wind</span>
+                                        <span class="value" id="windSpeed">-- km/h</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="label">Visibility</span>
+                                        <span class="value" id="visibility">-- km</span>
+                                    </div>
+                                </div>
+                                <div class="driving-conditions" id="drivingConditions">
+                                    <div class="risk-indicator">
+                                        <span class="risk-label">Driving Risk:</span>
+                                        <span class="risk-value low" id="drivingRisk">Low</span>
+                                    </div>
+                                    <div class="recommendations" id="weatherRecommendations">
+                                        <small>Good conditions for driving</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hotspots Panel -->
+                    <div class="panel hotspots-panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Safety Hotspots</h3>
+                            <button class="toggle-btn" data-target="hotspotsContent">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div class="panel-content" id="hotspotsContent">
+                            <div class="hotspots-filters">
+                                <select id="hotspotFilter">
+                                    <option value="all">All Types</option>
+                                    <option value="accident_prone">Accident Prone</option>
+                                    <option value="traffic_congestion">Traffic Congestion</option>
+                                    <option value="construction">Construction</option>
+                                    <option value="flooding_risk">Flooding Risk</option>
+                                    <option value="weather_risk">Weather Risk</option>
+                                    <option value="pedestrian_risk">Pedestrian Risk</option>
+                                </select>
+                                <select id="riskFilter">
+                                    <option value="all">All Risk Levels</option>
+                                    <option value="very_high">Very High</option>
+                                    <option value="high">High</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="low">Low</option>
+                                </select>
+                            </div>
+                            <div class="hotspots-list" id="hotspotsList">
+                                <div class="loading">Loading hotspots...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Route Panel -->
+                    <div class="panel route-panel" style="display: none;" id="routePanel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-route"></i> Route Information</h3>
+                            <button class="toggle-btn" data-target="routeContent">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div class="panel-content" id="routeContent">
+                            <div class="route-summary" id="routeSummary">
+                                <!-- Route details will be populated here -->
+                            </div>
+                            <div class="route-warnings" id="routeWarnings">
+                                <!-- Route warnings will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Legend Panel -->
+                    <div class="panel legend-panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-info-circle"></i> Map Legend</h3>
+                            <button class="toggle-btn" data-target="legendContent">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div class="panel-content" id="legendContent">
+                            <div class="legend-items">
+                                <div class="legend-item">
+                                    <div class="legend-color risk-very-high"></div>
+                                    <span>Very High Risk</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color risk-high"></div>
+                                    <span>High Risk</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color risk-medium"></div>
+                                    <span>Medium Risk</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color risk-low"></div>
+                                    <span>Low Risk</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-icon"><i class="fas fa-route"></i></div>
+                                    <span>Planned Route</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                    <span>Start/End Points</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Container -->
+                <div class="map-container">
+                    <div id="map" class="map"></div>
+                    <div class="map-controls">
+                        <button class="map-control-btn" id="toggleSidebar" title="Toggle Sidebar">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <button class="map-control-btn" id="centerMap" title="Center Map">
+                            <i class="fas fa-crosshairs"></i>
+                        </button>
+                        <button class="map-control-btn" id="toggleFullscreen" title="Toggle Fullscreen">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                    <div class="map-loading" id="mapLoading" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Loading route data...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notifications Container -->
+    <div class="notifications" id="notifications"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner large"></div>
+            <h3>SafeRoute Navigator</h3>
+            <p id="loadingText">Initializing application...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/config.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/weather.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/hotspots.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/routes.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

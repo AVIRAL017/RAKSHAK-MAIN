@@ -1,0 +1,81 @@
+{
+  "timestamp": "2025-10-12T20:18:08.079627",
+  "sample_hotspots": [
+    {
+      "id": "delhi_connaught_place",
+      "name": "Connaught Place",
+      "city": "Delhi",
+      "latitude": 28.6315,
+      "longitude": 77.2167,
+      "risk_score": 10.0,
+      "severity": "Critical",
+      "color": "#8B0000",
+      "radius": 500,
+      "description": "Connaught Place: Extreme caution required - Evening peak traffic",
+      "factors": [
+        "Heavy traffic",
+        "Rush hour congestion",
+        "High accident frequency",
+        "Complex intersection"
+      ],
+      "updated_at": "2025-10-12T20:18:08.077495",
+      "last_incident": "2 hours ago",
+      "traffic_level": "Heavy",
+      "weather_impact": "Light rain impact"
+    },
+    {
+      "id": "delhi_red_fort_area",
+      "name": "Red Fort Area",
+      "city": "Delhi",
+      "latitude": 28.6562,
+      "longitude": 77.241,
+      "risk_score": 10.0,
+      "severity": "Critical",
+      "color": "#8B0000",
+      "radius": 500,
+      "description": "Red Fort Area: Extreme caution required - Evening peak traffic",
+      "factors": [
+        "Heavy traffic",
+        "Rush hour congestion",
+        "High accident frequency",
+        "Complex intersection"
+      ],
+      "updated_at": "2025-10-12T20:18:08.077495",
+      "last_incident": "2 days ago",
+      "traffic_level": "Heavy",
+      "weather_impact": "Light rain impact"
+    },
+    {
+      "id": "delhi_india_gate",
+      "name": "India Gate",
+      "city": "Delhi",
+      "latitude": 28.6129,
+      "longitude": 77.2295,
+      "risk_score": 10.0,
+      "severity": "Critical",
+      "color": "#8B0000",
+      "radius": 500,
+      "description": "India Gate: Extreme caution required - Evening peak traffic",
+      "factors": [
+        "Heavy traffic",
+        "Rush hour congestion",
+        "High accident frequency",
+        "Complex intersection"
+      ],
+      "updated_at": "2025-10-12T20:18:08.077495",
+      "last_incident": "1 day ago",
+      "traffic_level": "Heavy",
+      "weather_impact": "Foggy conditions"
+    }
+  ],
+  "system_status": "operational",
+  "features": [
+    "Real-time risk calculation",
+    "Weather-based adjustments",
+    "Traffic pattern analysis",
+    "Time-of-day variations",
+    "Location-based personalization",
+    "Multiple hotspots per city",
+    "Severity-based color coding"
+  ]
+}

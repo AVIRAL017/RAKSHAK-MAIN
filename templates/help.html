@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Support - SafeRoute Navigator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+            color: #4F46E5;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            color: #1F2937;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-menu a {
+            color: #6B7280;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #4F46E5;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4F46E5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            background: #EF4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        .logout-btn:hover {
+            background: #DC2626;
+        }
+        
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        
+        .help-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .help-header h1 {
+            font-size: 3rem;
+            color: #1F2937;
+            margin-bottom: 1rem;
+        }
+        
+        .help-header p {
+            font-size: 1.2rem;
+            color: #6B7280;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: border-color 0.2s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9CA3AF;
+            font-size: 1.2rem;
+        }
+        
+        .help-sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .help-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .help-section:hover {
+            transform: translateY(-4px);
+        }
+        
+        .section-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .section-icon.getting-started { color: #10B981; }
+        .section-icon.features { color: #4F46E5; }
+        .section-icon.troubleshoot { color: #F59E0B; }
+        .section-icon.contact { color: #EF4444; }
+        
+        .help-section h3 {
+            font-size: 1.5rem;
+            color: #1F2937;
+            margin-bottom: 1rem;
+        }
+        
+        .help-section p {
+            color: #6B7280;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .help-links {
+            list-style: none;
+        }
+        
+        .help-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .help-links a {
+            color: #4F46E5;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .help-links a:hover {
+            color: #4338CA;
+        }
+        
+        .faq-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .faq-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .faq-header h2 {
+            font-size: 2rem;
+            color: #1F2937;
+        }
+        
+        .faq-item {
+            border-bottom: 1px solid #E5E7EB;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+        }
+        
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .faq-question {
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            padding: 1rem 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1F2937;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color 0.2s;
+        }
+        
+        .faq-question:hover {
+            color: #4F46E5;
+        }
+        
+        .faq-answer {
+            padding: 0 0 1rem 0;
+            color: #6B7280;
+            line-height: 1.6;
+            display: none;
+        }
+        
+        .faq-answer.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-icon.rotate {
+            transform: rotate(180deg);
+        }
+        
+        .contact-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .contact-method {
+            text-align: center;
+            padding: 2rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .contact-method:hover {
+            border-color: #4F46E5;
+            transform: translateY(-2px);
+        }
+        
+        .contact-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-icon.email { color: #4F46E5; }
+        .contact-icon.phone { color: #10B981; }
+        .contact-icon.chat { color: #F59E0B; }
+        
+        .contact-method h4 {
+            font-size: 1.2rem;
+            color: #1F2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-method p {
+            color: #6B7280;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-method a {
+            color: #4F46E5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .help-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .help-header h1 {
+                font-size: 2rem;
+            }
+            
+            .help-header p {
+                font-size: 1rem;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <h1>SafeRoute Navigator</h1>
+            </div>
+            <nav class="nav-menu">
+                <a href="/" style="color: #6B7280; text-decoration: none; font-weight: 500; transition: color 0.2s;">Map</a>
+                <a href="/dashboard" style="color: #6B7280; text-decoration: none; font-weight: 500; transition: color 0.2s;">Dashboard</a>
+                <a href="/analytics" style="color: #6B7280; text-decoration: none; font-weight: 500; transition: color 0.2s;">Analytics</a>
+                <a href="/profile" style="color: #6B7280; text-decoration: none; font-weight: 500; transition: color 0.2s;">Profile</a>
+                <a href="/settings" style="color: #6B7280; text-decoration: none; font-weight: 500; transition: color 0.2s;">Settings</a>
+                <a href="/help" class="active" style="color: #4F46E5; text-decoration: none; font-weight: 500;">Help</a>
+                <a href="/admin" style="color: #6B7280; text-decoration: none; font-weight: 500; transition: color 0.2s;">Admin</a>
+            </nav>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <span id="userName">Loading...</span>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <!-- Help Header -->
+        <div class="help-header">
+            <h1><i class="fas fa-question-circle"></i> Help & Support</h1>
+            <p>Get help with SafeRoute Navigator. Find answers to common questions, learn about features, and get support when you need it.</p>
+        </div>
+        
+        <!-- Search Box -->
+        <div class="search-box">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for help articles, features, or topics..." id="helpSearch">
+            </div>
+        </div>
+        
+        <!-- Help Sections -->
+        <div class="help-sections">
+            <div class="help-section">
+                <i class="fas fa-rocket section-icon getting-started"></i>
+                <h3>Getting Started</h3>
+                <p>New to SafeRoute Navigator? Learn the basics and get up to speed quickly with our step-by-step guides.</p>
+                <ul class="help-links">
+                    <li><a href="#quick-start"><i class="fas fa-play-circle"></i> Quick Start Guide</a></li>
+                    <li><a href="#first-route"><i class="fas fa-map-signs"></i> Calculate Your First Route</a></li>
+                    <li><a href="#account-setup"><i class="fas fa-user-cog"></i> Account Setup</a></li>
+                    <li><a href="#mobile-app"><i class="fas fa-mobile-alt"></i> Mobile App Setup</a></li>
+                </ul>
+            </div>
+            
+            <div class="help-section">
+                <i class="fas fa-star section-icon features"></i>
+                <h3>Features Guide</h3>
+                <p>Discover all the powerful features that make SafeRoute Navigator your ultimate navigation companion.</p>
+                <ul class="help-links">
+                    <li><a href="#route-types"><i class="fas fa-route"></i> Route Types & Options</a></li>
+                    <li><a href="#safety-scores"><i class="fas fa-shield-check"></i> Understanding Safety Scores</a></li>
+                    <li><a href="#real-time"><i class="fas fa-clock"></i> Real-time Updates</a></li>
+                    <li><a href="#preferences"><i class="fas fa-sliders-h"></i> Customizing Preferences</a></li>
+                </ul>
+            </div>
+            
+            <div class="help-section">
+                <i class="fas fa-tools section-icon troubleshoot"></i>
+                <h3>Troubleshooting</h3>
+                <p>Having issues? Find solutions to common problems and technical difficulties.</p>
+                <ul class="help-links">
+                    <li><a href="#location-issues"><i class="fas fa-map-marker-alt"></i> Location Detection Problems</a></li>
+                    <li><a href="#route-errors"><i class="fas fa-exclamation-triangle"></i> Route Calculation Errors</a></li>
+                    <li><a href="#performance"><i class="fas fa-tachometer-alt"></i> Performance Issues</a></li>
+                    <li><a href="#browser-support"><i class="fas fa-globe"></i> Browser Compatibility</a></li>
+                </ul>
+            </div>
+            
+            <div class="help-section">
+                <i class="fas fa-headset section-icon contact"></i>
+                <h3>Contact Support</h3>
+                <p>Can't find what you're looking for? Our support team is here to help you with any questions or issues.</p>
+                <ul class="help-links">
+                    <li><a href="#submit-ticket"><i class="fas fa-ticket-alt"></i> Submit Support Ticket</a></li>
+                    <li><a href="#live-chat"><i class="fas fa-comments"></i> Live Chat Support</a></li>
+                    <li><a href="#community"><i class="fas fa-users"></i> Community Forum</a></li>
+                    <li><a href="#feedback"><i class="fas fa-comment-dots"></i> Send Feedback</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <div class="faq-header">
+                <i class="fas fa-question-circle" style="color: #4F46E5; font-size: 2rem;"></i>
+                <h2>Frequently Asked Questions</h2>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    How does SafeRoute Navigator calculate safety scores?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </button>
+                <div class="faq-answer">
+                    SafeRoute Navigator uses a sophisticated algorithm that considers multiple factors including crime statistics, accident reports, lighting conditions, traffic patterns, and user feedback. The safety score is calculated on a scale of 0-10, with 10 being the safest. Our machine learning model continuously updates these scores based on real-time data and historical trends.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    What's the difference between fastest, safest, and balanced routes?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </button>
+                <div class="faq-answer">
+                    <strong>Fastest Route:</strong> Prioritizes time efficiency with minimal travel duration.<br>
+                    <strong>Safest Route:</strong> Prioritizes safety factors even if it takes longer.<br>
+                    <strong>Balanced Route:</strong> Optimal combination of safety and speed for most situations.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    Can I use SafeRoute Navigator offline?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </button>
+                <div class="faq-answer">
+                    Currently, SafeRoute Navigator requires an internet connection for real-time safety data and route calculations. However, we're working on offline functionality for emergency situations and areas with poor connectivity.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    How do I report incorrect route information or safety concerns?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </button>
+                <div class="faq-answer">
+                    You can report issues directly through the app using the "Report Issue" button on any route, or contact our support team. We take all reports seriously and use them to improve our algorithms and data accuracy.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    Is my location data private and secure?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </button>
+                <div class="faq-answer">
+                    Yes, privacy is our priority. Location data is encrypted and used only for route calculations. We don't store your travel history unless you opt-in, and we never share personal data with third parties without explicit consent.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    Which cities and regions are currently supported?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </button>
+                <div class="faq-answer">
+                    SafeRoute Navigator currently supports major cities in India including Delhi, Mumbai, Bangalore, Chennai, Hyderabad, Pune, and Kolkata. We're continuously expanding to more cities based on user demand and data availability.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contact Section -->
+        <div class="contact-section">
+            <h2 style="text-align: center; margin-bottom: 1rem; color: #1F2937;">
+                <i class="fas fa-envelope" style="color: #4F46E5; margin-right: 0.5rem;"></i>
+                Get in Touch
+            </h2>
+            <p style="text-align: center; color: #6B7280; margin-bottom: 2rem;">
+                Choose the best way to reach us. We're here to help 24/7.
+            </p>
+            
+            <div class="contact-methods">
+                <div class="contact-method" onclick="location.href='mailto:support@saferoute.com'">
+                    <i class="fas fa-envelope contact-icon email"></i>
+                    <h4>Email Support</h4>
+                    <p>Get detailed help via email</p>
+                    <a href="mailto:support@saferoute.com">support@saferoute.com</a>
+                </div>
+                
+                <div class="contact-method" onclick="location.href='tel:+911234567890'">
+                    <i class="fas fa-phone contact-icon phone"></i>
+                    <h4>Phone Support</h4>
+                    <p>Speak with our support team</p>
+                    <a href="tel:+911234567890">+91 123 456 7890</a>
+                </div>
+                
+                <div class="contact-method" onclick="startLiveChat()">
+                    <i class="fas fa-comments contact-icon chat"></i>
+                    <h4>Live Chat</h4>
+                    <p>Instant help when you need it</p>
+                    <a href="#">Start Chat</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Navigation Script -->
+    <script src="{{ url_for('static', filename='js/navigation.js') }}"></script>
+    
+    <script>
+        class HelpPage {
+            constructor() {
+                this.init();
+            }
+            
+            async init() {
+                await this.loadUserInfo();
+                this.setupSearch();
+            }
+            
+            async loadUserInfo() {
+                try {
+                    const response = await fetch('/api/auth/user');
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        const user = data.user;
+                        document.getElementById('userName').textContent = user.username;
+                        document.getElementById('userAvatar').textContent = user.full_name.charAt(0).toUpperCase();
+                    } else {
+                        window.location.href = '/login';
+                    }
+                } catch (error) {
+                    console.error('Error loading user info:', error);
+                    window.location.href = '/login';
+                }
+            }
+            
+            setupSearch() {
+                const searchInput = document.getElementById('helpSearch');
+                searchInput.addEventListener('input', (e) => {
+                    this.searchHelp(e.target.value);
+                });
+            }
+            
+            searchHelp(query) {
+                if (!query.trim()) return;
+                
+                // Simple search implementation
+                const sections = document.querySelectorAll('.help-section, .faq-item');
+                sections.forEach(section => {
+                    const text = section.textContent.toLowerCase();
+                    const searchTerm = query.toLowerCase();
+                    
+                    if (text.includes(searchTerm)) {
+                        section.style.display = 'block';
+                        section.style.border = '2px solid #4F46E5';
+                    } else {
+                        section.style.border = 'none';
+                    }
+                });
+            }
+        }
+        
+        function toggleFaq(button) {
+            const answer = button.nextElementSibling;
+            const icon = button.querySelector('.faq-icon');
+            
+            if (answer.classList.contains('show')) {
+                answer.classList.remove('show');
+                icon.classList.remove('rotate');
+            } else {
+                // Close all other FAQs
+                document.querySelectorAll('.faq-answer.show').forEach(el => {
+                    el.classList.remove('show');
+                    el.previousElementSibling.querySelector('.faq-icon').classList.remove('rotate');
+                });
+                
+                answer.classList.add('show');
+                icon.classList.add('rotate');
+            }
+        }
+        
+        function startLiveChat() {
+            alert('Live chat feature would be implemented here with a chat widget.');
+        }
+        
+        async function logout() {
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+            }
+        }
+        
+        // Initialize help page
+        document.addEventListener('DOMContentLoaded', () => {
+            new HelpPage();
+        });
+    </script>
+</body>
+</html>

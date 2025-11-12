@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - SafeRoute Navigator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+            color: #4F46E5;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            color: #1F2937;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-menu a {
+            color: #6B7280;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #4F46E5;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4F46E5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            background: #EF4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        .logout-btn:hover {
+            background: #DC2626;
+        }
+        
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        
+        .profile-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .profile-avatar::after {
+            content: '\f030';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: white;
+            color: #4F46E5;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-info h1 {
+            font-size: 2.5rem;
+            color: #1F2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-info .username {
+            color: #6B7280;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .profile-stat {
+            text-align: center;
+        }
+        
+        .profile-stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4F46E5;
+        }
+        
+        .profile-stat-label {
+            color: #6B7280;
+            font-size: 0.9rem;
+        }
+        
+        .profile-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: #4F46E5;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #4338CA;
+        }
+        
+        .btn-secondary {
+            background: #F3F4F6;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background: #E5E7EB;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .main-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header h2 {
+            color: #1F2937;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #F3F4F6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            color: #6B7280;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            color: #4F46E5;
+            border-bottom-color: #4F46E5;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 1rem 0;
+        }
+        
+        .achievement {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .achievement:hover {
+            background: #F9FAFB;
+        }
+        
+        .achievement.earned {
+            background: linear-gradient(45deg, #10B981, #059669);
+        }
+        
+        .achievement.earned .achievement-icon {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .achievement.earned .achievement-info h4 {
+            color: white;
+        }
+        
+        .achievement.earned .achievement-info p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .achievement-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #F3F4F6;
+            color: #6B7280;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .achievement-info {
+            flex: 1;
+        }
+        
+        .achievement-info h4 {
+            color: #1F2937;
+            margin-bottom: 0.25rem;
+        }
+        
+        .achievement-info p {
+            color: #6B7280;
+            font-size: 0.9rem;
+        }
+        
+        .route-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .route-item:last-child {
+            border-bottom: none;
+        }
+        
+        .route-details {
+            flex: 1;
+        }
+        
+        .route-details h4 {
+            color: #1F2937;
+            margin-bottom: 0.25rem;
+        }
+        
+        .route-details p {
+            color: #6B7280;
+            font-size: 0.9rem;
+        }
+        
+        .route-meta {
+            text-align: right;
+            color: #6B7280;
+            font-size: 0.8rem;
+        }
+        
+        .safety-score {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: white;
+        }
+        
+        .safety-score.high {
+            background: #10B981;
+        }
+        
+        .safety-score.medium {
+            background: #F59E0B;
+        }
+        
+        .safety-score.low {
+            background: #EF4444;
+        }
+        
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .metric-item {
+            text-align: center;
+            padding: 1rem;
+            background: #F9FAFB;
+            border-radius: 8px;
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4F46E5;
+            margin-bottom: 0.25rem;
+        }
+        
+        .metric-label {
+            color: #6B7280;
+            font-size: 0.9rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #F3F4F6;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4F46E5, #7C3AED);
+            transition: width 0.3s ease;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #6B7280;
+            padding: 2rem;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #D1D5DB;
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-stats {
+                justify-content: center;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <h1>SafeRoute Navigator</h1>
+            </div>
+            <nav class="nav-menu">
+                <a href="/">Map</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/analytics">Analytics</a>
+                <a href="/profile" class="active">Profile</a>
+                <a href="/settings">Settings</a>
+                <a href="/admin">Admin</a>
+            </nav>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <span id="userName">Loading...</span>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar" id="profileAvatar" onclick="changeAvatar()">
+                A
+            </div>
+            <div class="profile-info">
+                <h1 id="fullName">Loading...</h1>
+                <div class="username">@<span id="profileUsername">username</span></div>
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <div class="profile-stat-value" id="totalRoutes">0</div>
+                        <div class="profile-stat-label">Routes</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="profile-stat-value" id="totalDistance">0 km</div>
+                        <div class="profile-stat-label">Distance</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="profile-stat-value" id="safetyScore">0</div>
+                        <div class="profile-stat-label">Safety Score</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="profile-stat-value" id="memberSince">2024</div>
+                        <div class="profile-stat-label">Member Since</div>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-actions">
+                <button class="btn btn-primary" onclick="editProfile()">
+                    <i class="fas fa-edit"></i>
+                    Edit Profile
+                </button>
+                <button class="btn btn-secondary" onclick="shareProfile()">
+                    <i class="fas fa-share"></i>
+                    Share
+                </button>
+            </div>
+        </div>
+        
+        <div class="content-grid">
+            <!-- Main Panel -->
+            <div class="main-panel">
+                <!-- Activity Overview -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-chart-line"></i> Activity Overview</h2>
+                        <select id="timeRange" onchange="updateCharts()">
+                            <option value="7d">Last 7 days</option>
+                            <option value="30d">Last 30 days</option>
+                            <option value="90d">Last 90 days</option>
+                        </select>
+                    </div>
+                    
+                    <div class="tabs">
+                        <div class="tab active" onclick="showTab('routes-chart')">Routes</div>
+                        <div class="tab" onclick="showTab('safety-chart')">Safety</div>
+                        <div class="tab" onclick="showTab('distance-chart')">Distance</div>
+                    </div>
+                    
+                    <div id="routes-chart" class="tab-content active">
+                        <div class="chart-container">
+                            <canvas id="routesChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div id="safety-chart" class="tab-content">
+                        <div class="chart-container">
+                            <canvas id="safetyChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div id="distance-chart" class="tab-content">
+                        <div class="chart-container">
+                            <canvas id="distanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Route History -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-history"></i> Recent Routes</h2>
+                        <button class="btn btn-secondary" onclick="viewAllRoutes()">
+                            View All
+                        </button>
+                    </div>
+                    
+                    <div id="routeHistory">
+                        <!-- Route items will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Side Panel -->
+            <div class="side-panel">
+                <!-- Achievements -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-trophy"></i> Achievements</h2>
+                        <span id="achievementCount">0/12</span>
+                    </div>
+                    
+                    <div id="achievements">
+                        <!-- Achievements will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Personal Metrics -->
+                <div class="card">
+                    <h2><i class="fas fa-tachometer-alt"></i> Personal Metrics</h2>
+                    
+                    <div class="metric-grid">
+                        <div class="metric-item">
+                            <div class="metric-value" id="avgSpeed">0</div>
+                            <div class="metric-label">Avg Speed (km/h)</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value" id="timeSaved">0</div>
+                            <div class="metric-label">Time Saved (min)</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 1rem 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Safety Progress</span>
+                            <span id="safetyProgress">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="safetyProgressBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 1rem 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Route Diversity</span>
+                            <span id="diversityProgress">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="diversityProgressBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="card">
+                    <h2><i class="fas fa-info-circle"></i> Quick Stats</h2>
+                    
+                    <div style="margin: 1rem 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Favorite Route Type:</span>
+                            <strong id="favoriteRouteType">Balanced</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Most Active Day:</span>
+                            <strong id="mostActiveDay">Monday</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Peak Hour:</span>
+                            <strong id="peakHour">8-9 AM</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Current Streak:</span>
+                            <strong id="currentStreak">5 days</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        class ProfileManager {
+            constructor() {
+                this.charts = {};
+                this.currentTimeRange = '7d';
+                this.init();
+            }
+            
+            async init() {
+                await this.loadUserInfo();
+                await this.loadProfileData();
+                this.initializeCharts();
+            }
+            
+            async loadUserInfo() {
+                try {
+                    const response = await fetch('/api/auth/user');
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        const user = data.user;
+                        document.getElementById('userName').textContent = user.username;
+                        document.getElementById('userAvatar').textContent = user.full_name.charAt(0).toUpperCase();
+                        document.getElementById('profileAvatar').textContent = user.full_name.charAt(0).toUpperCase();
+                        document.getElementById('fullName').textContent = user.full_name;
+                        document.getElementById('profileUsername').textContent = user.username;
+                    } else {
+                        window.location.href = '/login';
+                    }
+                } catch (error) {
+                    console.error('Error loading user info:', error);
+                    window.location.href = '/login';
+                }
+            }
+            
+            async loadProfileData() {
+                try {
+                    const response = await fetch('/api/stats/user');
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        this.profileData = data.data; // Store for chart updates
+                        this.updateProfileStats(data.data);
+                        this.loadAchievements(data.data.achievements || []);
+                        this.loadRouteHistory(data.data.recent_routes || []);
+                    }
+                } catch (error) {
+                    console.error('Error loading profile data:', error);
+                }
+            }
+            
+            updateProfileStats(data) {
+                const personalStats = data.personal_stats || {};
+                
+                // Update header stats with real data
+                document.getElementById('totalRoutes').textContent = personalStats.routes_calculated || '0';
+                document.getElementById('totalDistance').textContent = personalStats.total_distance || '0 km';
+                document.getElementById('safetyScore').textContent = personalStats.safety_score || '0';
+                document.getElementById('memberSince').textContent = '2024';
+                
+                // Update metrics with real data
+                const avgSpeed = personalStats.routes_calculated > 0 ? Math.floor(40 + (personalStats.safety_score || 0) * 2) : 0;
+                document.getElementById('avgSpeed').textContent = avgSpeed;
+                document.getElementById('timeSaved').textContent = personalStats.time_saved || '0';
+                
+                // Update progress bars with real data
+                const safetyProgress = Math.round((personalStats.safety_score || 0) * 10);
+                document.getElementById('safetyProgress').textContent = `${safetyProgress}%`;
+                document.getElementById('safetyProgressBar').style.width = `${safetyProgress}%`;
+                
+                // Calculate route diversity based on actual data
+                const routeCount = personalStats.routes_calculated || 0;
+                const diversityProgress = Math.min(90, Math.max(10, routeCount * 8));
+                document.getElementById('diversityProgress').textContent = `${diversityProgress}%`;
+                document.getElementById('diversityProgressBar').style.width = `${diversityProgress}%`;
+                
+                // Update quick stats with real data
+                document.getElementById('favoriteRouteType').textContent = data.favorite_route_type || 'Balanced';
+                document.getElementById('mostActiveDay').textContent = data.most_active_day || 'N/A';
+                document.getElementById('peakHour').textContent = '8-9 AM'; // Could be calculated from real data
+                document.getElementById('currentStreak').textContent = data.current_streak || '0 days';
+            }
+            
+            loadAchievements(achievements) {
+                const container = document.getElementById('achievements');
+                container.innerHTML = '';
+                
+                // Achievement icon mapping
+                const achievementIcons = {
+                    'First Route': 'fas fa-flag',
+                    'Safety First': 'fas fa-shield-alt', 
+                    'Explorer': 'fas fa-compass',
+                    'Distance King': 'fas fa-crown',
+                    'Route Master': 'fas fa-route',
+                    'Consistent User': 'fas fa-calendar-check',
+                    'Early Bird': 'fas fa-sun',
+                    'Night Owl': 'fas fa-moon',
+                    'Eco Warrior': 'fas fa-leaf',
+                    'Speed Demon': 'fas fa-bolt'
+                };
+                
+                // All possible achievements for display
+                const allAchievements = [
+                    { name: 'First Route', description: 'Calculated your first route', earned: false },
+                    { name: 'Safety First', description: 'Maintained 8.0+ average safety score', earned: false },
+                    { name: 'Explorer', description: 'Calculated 10+ different routes', earned: false },
+                    { name: 'Distance King', description: 'Traveled 100+ km total', earned: false },
+                    { name: 'Route Master', description: 'Tried all route types', earned: false },
+                    { name: 'Consistent User', description: 'Used SafeRoute for 7+ days', earned: false },
+                    { name: 'Early Bird', description: 'Traveled during off-peak hours', earned: false },
+                    { name: 'Night Owl', description: 'Completed 5 night routes', earned: false }
+                ];
+                
+                // Mark earned achievements
+                const earnedNames = achievements.map(a => a.name);
+                allAchievements.forEach(achievement => {
+                    achievement.earned = earnedNames.includes(achievement.name);
+                });
+                
+                let earnedCount = 0;
+                allAchievements.forEach(achievement => {
+                    if (achievement.earned) earnedCount++;
+                    
+                    const achievementEl = document.createElement('div');
+                    achievementEl.className = `achievement ${achievement.earned ? 'earned' : ''}`;
+                    const icon = achievementIcons[achievement.name] || 'fas fa-trophy';
+                    
+                    achievementEl.innerHTML = `
+                        <div class="achievement-icon">
+                            <i class="${icon}"></i>
+                        </div>
+                        <div class="achievement-info">
+                            <h4>${achievement.name}</h4>
+                            <p>${achievement.description}</p>
+                        </div>
+                    `;
+                    container.appendChild(achievementEl);
+                });
+                
+                document.getElementById('achievementCount').textContent = `${earnedCount}/${allAchievements.length}`;
+            }
+            
+            loadRouteHistory(routes) {
+                const container = document.getElementById('routeHistory');
+                container.innerHTML = '';
+                
+                if (routes.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-route"></i>
+                            <p>No routes calculated yet</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                routes.forEach(route => {
+                    const safetyScore = typeof route.safety_score === 'number' ? route.safety_score : 0;
+                    const safetyClass = safetyScore >= 8 ? 'high' : safetyScore >= 6 ? 'medium' : 'low';
+                    const routeEl = document.createElement('div');
+                    routeEl.className = 'route-item';
+                    
+                    // Format distance and duration
+                    const distance = typeof route.distance_km === 'number' ? route.distance_km.toFixed(1) : '0.0';
+                    const duration = typeof route.duration_minutes === 'number' ? Math.round(route.duration_minutes) : 0;
+                    
+                    routeEl.innerHTML = `
+                        <div class="route-details">
+                            <h4>${route.from} → ${route.to}</h4>
+                            <p>Safety Score: <span class="safety-score ${safetyClass}">${safetyScore.toFixed(1)}/10</span></p>
+                        </div>
+                        <div class="route-meta">
+                            <div>${route.date}</div>
+                            <div>${distance} km • ${duration} min</div>
+                        </div>
+                    `;
+                    container.appendChild(routeEl);
+                });
+            }
+            
+            initializeCharts() {
+                this.createRoutesChart();
+                this.createSafetyChart();
+                this.createDistanceChart();
+            }
+            
+            createRoutesChart() {
+                const ctx = document.getElementById('routesChart').getContext('2d');
+                const chartData = this.profileData?.activity_chart_data || {
+                    dates: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+                    routes: [0, 0, 0, 0, 0, 0, 0]
+                };
+                
+                this.charts.routes = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.dates,
+                        datasets: [{
+                            label: 'Routes Calculated',
+                            data: chartData.routes,
+                            borderColor: '#4F46E5',
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            createSafetyChart() {
+                const ctx = document.getElementById('safetyChart').getContext('2d');
+                const chartData = this.profileData?.activity_chart_data || {
+                    dates: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+                    safety: [0, 0, 0, 0, 0, 0, 0]
+                };
+                
+                this.charts.safety = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.dates,
+                        datasets: [{
+                            label: 'Average Safety Score',
+                            data: chartData.safety,
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                min: 6,
+                                max: 10
+                            }
+                        }
+                    }
+                });
+            }
+            
+            createDistanceChart() {
+                const ctx = document.getElementById('distanceChart').getContext('2d');
+                const chartData = this.profileData?.activity_chart_data || {
+                    dates: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+                    distance: [0, 0, 0, 0, 0, 0, 0]
+                };
+                
+                this.charts.distance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: chartData.dates,
+                        datasets: [{
+                            label: 'Distance Traveled (km)',
+                            data: chartData.distance,
+                            backgroundColor: '#7C3AED',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        
+        function showTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+        }
+        
+        function updateCharts() {
+            const timeRange = document.getElementById('timeRange').value;
+            // In a real app, this would fetch new data based on the time range
+            console.log('Updating charts for time range:', timeRange);
+        }
+        
+        function changeAvatar() {
+            alert('Avatar change functionality would be implemented here');
+        }
+        
+        function editProfile() {
+            window.location.href = '/settings';
+        }
+        
+        function shareProfile() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My SafeRoute Profile',
+                    text: 'Check out my SafeRoute Navigator profile!',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('Profile URL copied to clipboard!');
+                });
+            }
+        }
+        
+        function viewAllRoutes() {
+            alert('View all routes functionality would be implemented here');
+        }
+        
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+            }
+        }
+        
+        // Initialize profile manager
+        let profileManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            profileManager = new ProfileManager();
+        });
+    </script>
+</body>
+</html>

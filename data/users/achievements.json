@@ -1,0 +1,16 @@
+{
+  "demo_user": {
+    "first_route": {
+      "name": "First Route",
+      "description": "Calculated your first route",
+      "earned_date": "2025-10-15T12:09:29.496153",
+      "earned": true
+    },
+    "distance_king": {
+      "name": "Distance King",
+      "description": "Traveled 100+ km total",
+      "earned_date": "2025-10-15T12:09:29.496313",
+      "earned": true
+    }
+  }
+}

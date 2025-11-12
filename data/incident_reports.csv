@@ -1,0 +1,2 @@
+incident_id,timestamp,latitude,longitude,incident_type,severity,description,reporter_type,user_id,image_url,status,verified,created_at
+INC-20251104055621-0024,2025-11-04T05:56:21.629546,28.6139,77.209,accident,medium,truck accident,user,,,reported,0,2025-11-04 05:56:21

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAKSHAK - SafeRoute Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/global-fixes.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-modern.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <style>
+    html, body { height: 100%; }
+    body { margin: 0; }
+    .map-root { position: relative; width: 100%; height: calc(100vh - 240px); overflow: hidden; }
+    #map { position: absolute; inset: 0; z-index: 1; }
+    /* Top brand bar (minimal) */
+    .brand-bar {
+      position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.9); border-radius: 9999px; padding: 8px 16px;
+      box-shadow: var(--shadow-md); z-index: 3;
+    }
+    .brand-bar .logo { display:flex; align-items:center; gap:8px; font-weight: 800; color: var(--gray-800); }
+    .brand-bar .logo i { color: var(--primary-blue); }
+    /* Center search */
+    .search-wrap {
+      position: absolute; top: 70px; left: 50%; transform: translateX(-50%);
+      width: min(720px, 92vw); display: flex; gap: 8px; z-index: 3;
+      background: rgba(255,255,255,0.95); border-radius: 12px; padding: 10px; box-shadow: var(--shadow-lg);
+    }
+    .search-wrap input {
+      flex: 1; border: 2px solid var(--gray-200); border-radius: 10px; padding: 12px 14px; font-size: 0.95rem;
+    }
+    .search-wrap .btn { min-width: 110px; }
+    /* Floating action panel */
+    .fab-panel {
+      position: absolute; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 10px; z-index: 3;
+    }
+    .fab {
+      width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer;
+      display:flex; align-items:center; justify-content:center; color: #fff; box-shadow: var(--shadow-lg);
+      transition: transform var(--transition-base);
+    }
+    .fab:hover { transform: translateY(-2px); }
+    .fab.locate { background: var(--primary-blue); }
+    .fab.layers { background: var(--accent-cyan); }
+    .fab.incident { background: var(--accent-orange); }
+    .fab.emergency { background: var(--accent-red); }
+    /* Toasts */
+    .toast { position: absolute; left: 16px; bottom: 16px; z-index: 3; }
+    /* Weather chip */
+    .weather-panel {
+      position: absolute; left: 16px; top: 88px; z-index: 3; background: rgba(255,255,255,0.95);
+      border-radius: 12px; box-shadow: var(--shadow-md); overflow: hidden; min-width: 240px;
+    }
+    .weather-header { display:flex; align-items:center; justify-content:space-between; padding: 10px 12px; background: linear-gradient(135deg, var(--primary-blue), var(--primary-indigo)); color:#fff; }
+    .weather-body { padding: 10px 12px; color: var(--gray-800); }
+    .weather-min { display:flex; align-items:center; gap:10px; }
+    .weather-min .temp { font-weight:800; font-size: 1.25rem; }
+
+    /* Legend chip */
+    .legend-chip {
+      position: absolute; right: 16px; top: 16px; z-index: 3; background: rgba(255,255,255,0.95);
+      padding: 8px 12px; border-radius: 9999px; box-shadow: var(--shadow-md); font-size: 0.85rem; color: var(--gray-700);
+      display:flex; align-items:center; gap: 10px;
+    }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; display:inline-block; }
+    .dot-low { background: #22C55E; } .dot-med { background: #EAB308; } .dot-high { background: #F97316; } .dot-crit { background: #EF4444; }
+    .dot-user { background: #4F46E5; box-shadow: 0 0 0 3px rgba(79,70,229,0.2); }
+    @media (max-width: 640px) {
+      .brand-bar { top: 10px; }
+      .search-wrap { top: 58px; padding: 8px; }
+      .search-wrap .btn { min-width: 86px; }
+      .map-root { height: calc(100vh - 320px); }
+      .weather-panel { top: 76px; }
+    }
+  </style>
+</head>
+<body class="page-wrapper">
+  <main class="map-root">
+    <div id="map"></div>
+
+    <!-- Weather panel -->
+    <div class="weather-panel" id="weatherPanel">
+      <div class="weather-header">
+        <div style="display:flex; align-items:center; gap:8px;"><i class="fas fa-cloud-sun"></i> Weather</div>
+        <button id="weatherRefresh" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: #fff;">Refresh</button>
+      </div>
+      <div class="weather-body" id="weatherBody">
+        <div class="weather-min"><i class="fas fa-sun" id="weatherIcon"></i> <span class="temp" id="weatherTemp">--°C</span> <span id="weatherDesc" style="opacity:0.8;">Loading...</span></div>
+        <div style="display:flex; gap:12px; margin-top:6px; font-size:0.85rem; opacity:0.85;">
+          <div>Hum: <span id="weatherHum">--%</span></div>
+          <div>Wind: <span id="weatherWind">-- km/h</span></div>
+          <div>Vis: <span id="weatherVis">-- km</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="brand-bar">
+      <div class="logo"><i class="fas fa-shield-alt"></i> RAKSHAK</div>
+    </div>
+
+    <div class="search-wrap">
+      <input type="text" id="searchBox" placeholder="Search a place or paste coordinates (lat,lng)…" />
+      <button class="btn btn-primary" id="searchGo"><i class="fas fa-search"></i> Search</button>
+      <a class="btn btn-secondary" href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+    </div>
+
+    <div class="legend-chip">
+      <span class="legend-dot dot-crit"></span> Critical
+      <span class="legend-dot dot-high" style="margin-left:10px"></span> High
+      <span class="legend-dot dot-med" style="margin-left:10px"></span> Medium
+      <span class="legend-dot dot-low" style="margin-left:10px"></span> Low
+      <span class="legend-dot dot-user" style="margin-left:10px"></span> You
+    </div>
+
+    <div class="fab-panel">
+      <button class="fab layers" id="fab-fullscreen" title="Fullscreen"><i class="fas fa-expand"></i></button>
+      <button class="fab locate" id="fab-locate" title="Find my location"><i class="fas fa-crosshairs"></i></button>
+      <button class="fab layers" id="fab-layers" title="Toggle hotspots"><i class="fas fa-layer-group"></i></button>
+      <button class="fab incident" id="fab-incident" title="Report incident"><i class="fas fa-exclamation"></i></button>
+      <a class="fab emergency" id="fab-emergency" href="/emergency-command" title="Emergency command"><i class="fas fa-ambulance"></i></a>
+    </div>
+
+    <div class="notifications" id="notifications"></div>
+  </main>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- App scripts -->
+  <script src="{{ url_for('static', filename='js/navigation.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/config.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/hotspots.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/weather.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/routes.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/emergency-layers.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/incidents.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+  <script>
+// Initialize map and app
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Initialize full app once to set up map, layers, and services
+      if (window.SafeRouteApp) await SafeRouteApp.init();
+
+      // Search behavior
+      const searchInput = document.getElementById('searchBox');
+      const doSearch = async () => {
+        const q = searchInput.value.trim();
+        if (!q) return;
+        try {
+          const geo = await SafeRouteAPI.geocoding.forward(q);
+          if (geo.status === 'success' && geo.data.results?.length) {
+            const p = geo.data.results[0];
+            SafeRouteMap.centerOn(p.latitude || p.lat, p.longitude || p.lng, 13);
+            SafeRouteMap.addRouteMarker(p.latitude || p.lat, p.longitude || p.lng, 'start', p.display_name);
+            SafeRouteUtils.showNotification('Location found', 'success');
+          } else {
+            SafeRouteUtils.showNotification('No results', 'warning');
+          }
+        } catch (e) {
+          SafeRouteUtils.showNotification('Search failed', 'error');
+        }
+      };
+      document.getElementById('searchGo').addEventListener('click', doSearch);
+      searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
+
+      // Weather update
+      const updateWeather = async () => {
+        try {
+          const center = SafeRouteMap.getCenter();
+          if (!center) return;
+          const res = await SafeRouteAPI.weather.getCurrent(center.lat, center.lng);
+          if (res.status === 'success') {
+            const cur = res.data.current;
+            document.getElementById('weatherTemp').textContent = `${cur.temperature_c}°C`;
+            document.getElementById('weatherDesc').textContent = cur.description;
+            document.getElementById('weatherHum').textContent = `${cur.humidity_percent}%`;
+            document.getElementById('weatherWind').textContent = `${cur.wind_speed_kmh} km/h`;
+            document.getElementById('weatherVis').textContent = `${cur.visibility_km} km`;
+            // Update weather icon
+            const iconEl = document.getElementById('weatherIcon');
+            if (iconEl) {
+              const iconKey = cur.icon;
+              const fa = (SafeRouteConfig.weather.icons && SafeRouteConfig.weather.icons[iconKey]) || 'fa-cloud';
+              iconEl.className = `fas ${fa}`;
+            }
+          }
+        } catch (e) { /* ignore */ }
+      };
+      await updateWeather();
+      document.getElementById('weatherRefresh').addEventListener('click', updateWeather);
+      // Update when map stops moving
+      if (SafeRouteMap.map) { SafeRouteMap.map.on('moveend', updateWeather); }
+
+      // FAB actions
+      document.getElementById('fab-locate').addEventListener('click', () => SafeRouteMap.locateUser({ zoom: 15 }));
+      document.getElementById('fab-incident').addEventListener('click', () => {
+        if (window.IncidentReporter) IncidentReporter.openModal();
+      });
+      document.getElementById('fab-layers').addEventListener('click', () => {
+        const hs = SafeRouteMap.layers?.hotspots;
+        if (!hs) return;
+        if (SafeRouteMap.map.hasLayer(hs)) { SafeRouteMap.map.removeLayer(hs); SafeRouteUtils.showNotification('Hotspots hidden', 'info'); }
+        else { SafeRouteMap.map.addLayer(hs); SafeRouteUtils.showNotification('Hotspots shown', 'info'); }
+      });
+
+      // Fullscreen toggle
+      document.getElementById('fab-fullscreen').addEventListener('click', () => {
+        const root = document.querySelector('.map-root');
+        if (!document.fullscreenElement) {
+          root.requestFullscreen?.();
+        } else {
+          document.exitFullscreen?.();
+        }
+      });
+    });
+  </script>
+  {% include 'components/emergency_footer.html' %}
+</body>
+</html>

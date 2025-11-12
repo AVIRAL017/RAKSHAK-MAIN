@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - SafeRoute Navigator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+            color: #4F46E5;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            color: #1F2937;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-menu a {
+            color: #6B7280;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #4F46E5;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4F46E5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            background: #EF4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        .logout-btn:hover {
+            background: #DC2626;
+        }
+        
+        .main-content {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        
+        .settings-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .settings-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #1F2937;
+        }
+        
+        .settings-header .subtitle {
+            color: #6B7280;
+            font-size: 1.1rem;
+        }
+        
+        .settings-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+        
+        .settings-nav {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+        
+        .settings-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #6B7280;
+        }
+        
+        .settings-nav-item:hover, .settings-nav-item.active {
+            background: #F3F4F6;
+            color: #4F46E5;
+        }
+        
+        .settings-nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .settings-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .settings-section {
+            display: none;
+        }
+        
+        .settings-section.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #1F2937;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .setting-group {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        
+        .setting-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .setting-info h4 {
+            color: #1F2937;
+            margin-bottom: 0.25rem;
+        }
+        
+        .setting-info p {
+            color: #6B7280;
+            font-size: 0.9rem;
+        }
+        
+        .setting-control {
+            min-width: 200px;
+            text-align: right;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #D1D5DB;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .toggle-switch.active {
+            background: #4F46E5;
+        }
+        
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        
+        .toggle-switch.active::after {
+            transform: translateX(30px);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background: #4F46E5;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #4338CA;
+        }
+        
+        .btn-secondary {
+            background: #F3F4F6;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background: #E5E7EB;
+        }
+        
+        .btn-danger {
+            background: #EF4444;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #374151;
+            font-weight: 500;
+        }
+        
+        .danger-zone {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .danger-zone h4 {
+            color: #DC2626;
+            margin-bottom: 1rem;
+        }
+        
+        .notification {
+            background: #10B981;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .notification.error {
+            background: #EF4444;
+        }
+        
+        @media (max-width: 768px) {
+            .settings-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .settings-nav {
+                display: flex;
+                overflow-x: auto;
+                padding: 1rem;
+            }
+            
+            .settings-nav-item {
+                white-space: nowrap;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <h1>SafeRoute Navigator</h1>
+            </div>
+            <nav class="nav-menu">
+                <a href="/">Map</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/analytics">Analytics</a>
+                <a href="/settings" class="active">Settings</a>
+                <a href="/admin">Admin</a>
+            </nav>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <span id="userName">Loading...</span>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <div class="settings-header">
+            <h1><i class="fas fa-cog"></i> Settings</h1>
+            <p class="subtitle">Customize your SafeRoute Navigator experience</p>
+        </div>
+        
+        <div id="notification" class="notification"></div>
+        
+        <div class="settings-container">
+            <nav class="settings-nav">
+                <div class="settings-nav-item active" data-section="general">
+                    <i class="fas fa-user-cog"></i>
+                    <span>General</span>
+                </div>
+                <div class="settings-nav-item" data-section="routes">
+                    <i class="fas fa-route"></i>
+                    <span>Routes</span>
+                </div>
+                <div class="settings-nav-item" data-section="notifications">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                </div>
+                <div class="settings-nav-item" data-section="privacy">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Privacy</span>
+                </div>
+                <div class="settings-nav-item" data-section="account">
+                    <i class="fas fa-user"></i>
+                    <span>Account</span>
+                </div>
+            </nav>
+            
+            <div class="settings-content">
+                <!-- General Settings -->
+                <div id="general" class="settings-section active">
+                    <h2 class="section-title">
+                        <i class="fas fa-user-cog"></i>
+                        General Settings
+                    </h2>
+                    
+                    <div class="setting-group">
+                        <h3>Personal Information</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="fullName">Full Name</label>
+                                <input type="text" id="fullName" class="form-input" placeholder="Enter your full name">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" class="form-input" placeholder="Enter your email">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" class="form-input" placeholder="Enter your phone number">
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <h3>Preferences</h3>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Theme</h4>
+                                <p>Choose your preferred theme</p>
+                            </div>
+                            <div class="setting-control">
+                                <select id="theme" class="form-select">
+                                    <option value="light">Light</option>
+                                    <option value="dark">Dark</option>
+                                    <option value="auto">Auto</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Language</h4>
+                                <p>Select your preferred language</p>
+                            </div>
+                            <div class="setting-control">
+                                <select id="language" class="form-select">
+                                    <option value="en">English</option>
+                                    <option value="hi">Hindi</option>
+                                    <option value="ta">Tamil</option>
+                                    <option value="te">Telugu</option>
+                                    <option value="bn">Bengali</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Units</h4>
+                                <p>Distance and speed units</p>
+                            </div>
+                            <div class="setting-control">
+                                <select id="units" class="form-select">
+                                    <option value="metric">Metric (km, m/s)</option>
+                                    <option value="imperial">Imperial (mi, mph)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <button class="btn btn-primary" onclick="saveGeneralSettings()">Save Changes</button>
+                    </div>
+                </div>
+                
+                <!-- Route Settings -->
+                <div id="routes" class="settings-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-route"></i>
+                        Route Preferences
+                    </h2>
+                    
+                    <div class="setting-group">
+                        <h3>Default Route Settings</h3>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Preferred Route Type</h4>
+                                <p>Your default route calculation preference</p>
+                            </div>
+                            <div class="setting-control">
+                                <select id="routeType" class="form-select">
+                                    <option value="fastest">Fastest Route</option>
+                                    <option value="safest">Safest Route</option>
+                                    <option value="balanced">Balanced</option>
+                                    <option value="shortest">Shortest Distance</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Vehicle Type</h4>
+                                <p>Your primary vehicle type</p>
+                            </div>
+                            <div class="setting-control">
+                                <select id="vehicleType" class="form-select">
+                                    <option value="car">Car</option>
+                                    <option value="motorcycle">Motorcycle</option>
+                                    <option value="bicycle">Bicycle</option>
+                                    <option value="walking">Walking</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <h3>Route Avoidance</h3>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Avoid Tolls</h4>
+                                <p>Automatically avoid toll roads</p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" id="avoidTolls"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Avoid Highways</h4>
+                                <p>Prefer local roads over highways</p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" id="avoidHighways"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Avoid Construction</h4>
+                                <p>Route around construction zones</p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" id="avoidConstruction"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <button class="btn btn-primary" onclick="saveRouteSettings()">Save Route Preferences</button>
+                    </div>
+                </div>
+                
+                <!-- Notification Settings -->
+                <div id="notifications" class="settings-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-bell"></i>
+                        Notifications
+                    </h2>
+                    
+                    <div class="setting-group">
+                        <h3>Safety Alerts</h3>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Hazard Alerts</h4>
+                                <p>Get notified about road hazards and incidents</p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" id="hazardAlerts"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Weather Warnings</h4>
+                                <p>Receive alerts for severe weather conditions</p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" id="weatherWarnings"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Traffic Updates</h4>
+                                <p>Get notifications about traffic conditions</p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" id="trafficUpdates"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <h3>General Notifications</h3>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Route Suggestions</h4>
+                                <p>Receive suggestions for better routes</p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" id="routeSuggestions"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Safety Tips</h4>
+                                <p>Get periodic safety tips and recommendations</p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" id="safetyTips"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Email Notifications</h4>
+                                <p>Receive notifications via email</p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" id="emailNotifications"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <button class="btn btn-primary" onclick="saveNotificationSettings()">Save Notification Settings</button>
+                    </div>
+                </div>
+                
+                <!-- Privacy Settings -->
+                <div id="privacy" class="settings-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Privacy & Security
+                    </h2>
+                    
+                    <div class="setting-group">
+                        <h3>Data Privacy</h3>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Location Tracking</h4>
+                                <p>Allow location tracking for better route suggestions</p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" id="locationTracking"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Route History</h4>
+                                <p>Save route history for analytics and improvements</p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" id="routeHistory"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Anonymous Analytics</h4>
+                                <p>Share anonymous usage data to improve the service</p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" id="anonymousAnalytics"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <h3>Security</h3>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Two-Factor Authentication</h4>
+                                <p>Add an extra layer of security to your account</p>
+                            </div>
+                            <div class="setting-control">
+                                <button class="btn btn-secondary" onclick="setup2FA()">Enable 2FA</button>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Session Timeout</h4>
+                                <p>Automatically log out after inactivity</p>
+                            </div>
+                            <div class="setting-control">
+                                <select id="sessionTimeout" class="form-select">
+                                    <option value="30">30 minutes</option>
+                                    <option value="60">1 hour</option>
+                                    <option value="120">2 hours</option>
+                                    <option value="480">8 hours</option>
+                                    <option value="1440">24 hours</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <button class="btn btn-primary" onclick="savePrivacySettings()">Save Privacy Settings</button>
+                    </div>
+                </div>
+                
+                <!-- Account Settings -->
+                <div id="account" class="settings-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-user"></i>
+                        Account Management
+                    </h2>
+                    
+                    <div class="setting-group">
+                        <h3>Change Password</h3>
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword" class="form-input" placeholder="Enter current password">
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword" class="form-input" placeholder="Enter new password">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm Password</label>
+                                <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm new password">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="changePassword()">Change Password</button>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <h3>Account Actions</h3>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Export Data</h4>
+                                <p>Download your account data and route history</p>
+                            </div>
+                            <div class="setting-control">
+                                <button class="btn btn-secondary" onclick="exportData()">Export Data</button>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Clear Route History</h4>
+                                <p>Delete all saved route history</p>
+                            </div>
+                            <div class="setting-control">
+                                <button class="btn btn-secondary" onclick="clearHistory()">Clear History</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="danger-zone">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
+                        <p>These actions cannot be undone. Please proceed with caution.</p>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-danger" onclick="deactivateAccount()">Deactivate Account</button>
+                            <button class="btn btn-danger" onclick="deleteAccount()" style="margin-left: 1rem;">Delete Account</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        class SettingsManager {
+            constructor() {
+                this.currentSection = 'general';
+                this.settings = {};
+                this.init();
+            }
+            
+            async init() {
+                this.setupNavigation();
+                this.setupToggles();
+                await this.loadUserInfo();
+                await this.loadUserSettings();
+            }
+            
+            setupNavigation() {
+                const navItems = document.querySelectorAll('.settings-nav-item');
+                navItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        const section = item.dataset.section;
+                        this.showSection(section);
+                    });
+                });
+            }
+            
+            setupToggles() {
+                const toggles = document.querySelectorAll('.toggle-switch');
+                toggles.forEach(toggle => {
+                    toggle.addEventListener('click', () => {
+                        toggle.classList.toggle('active');
+                    });
+                });
+            }
+            
+            showSection(sectionName) {
+                // Update navigation
+                document.querySelectorAll('.settings-nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+                
+                // Update content
+                document.querySelectorAll('.settings-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(sectionName).classList.add('active');
+                
+                this.currentSection = sectionName;
+            }
+            
+            async loadUserInfo() {
+                try {
+                    const response = await fetch('/api/auth/user');
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        const user = data.user;
+                        document.getElementById('userName').textContent = user.username;
+                        document.getElementById('userAvatar').textContent = user.full_name.charAt(0).toUpperCase();
+                        
+                        // Populate form fields
+                        document.getElementById('fullName').value = user.full_name || '';
+                        document.getElementById('email').value = user.email || '';
+                    } else {
+                        window.location.href = '/login';
+                    }
+                } catch (error) {
+                    console.error('Error loading user info:', error);
+                    window.location.href = '/login';
+                }
+            }
+            
+            async loadUserSettings() {
+                try {
+                    // In a real app, this would fetch user settings from the backend
+                    // For now, we'll use default values
+                    this.settings = {
+                        theme: 'light',
+                        language: 'en',
+                        units: 'metric',
+                        routeType: 'balanced',
+                        vehicleType: 'car',
+                        sessionTimeout: '60'
+                    };
+                    
+                    // Apply loaded settings to form elements
+                    Object.keys(this.settings).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) {
+                            element.value = this.settings[key];
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error loading user settings:', error);
+                }
+            }
+            
+            showNotification(message, type = 'success') {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notification.style.display = 'block';
+                
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        // Initialize settings manager
+        let settingsManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            settingsManager = new SettingsManager();
+        });
+        
+        // Setting save functions
+        function saveGeneralSettings() {
+            const settings = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                theme: document.getElementById('theme').value,
+                language: document.getElementById('language').value,
+                units: document.getElementById('units').value
+            };
+            
+            // In a real app, this would send settings to the backend
+            console.log('Saving general settings:', settings);
+            settingsManager.showNotification('General settings saved successfully!');
+        }
+        
+        function saveRouteSettings() {
+            const settings = {
+                routeType: document.getElementById('routeType').value,
+                vehicleType: document.getElementById('vehicleType').value,
+                avoidTolls: document.getElementById('avoidTolls').classList.contains('active'),
+                avoidHighways: document.getElementById('avoidHighways').classList.contains('active'),
+                avoidConstruction: document.getElementById('avoidConstruction').classList.contains('active')
+            };
+            
+            console.log('Saving route settings:', settings);
+            settingsManager.showNotification('Route preferences saved successfully!');
+        }
+        
+        function saveNotificationSettings() {
+            const settings = {
+                hazardAlerts: document.getElementById('hazardAlerts').classList.contains('active'),
+                weatherWarnings: document.getElementById('weatherWarnings').classList.contains('active'),
+                trafficUpdates: document.getElementById('trafficUpdates').classList.contains('active'),
+                routeSuggestions: document.getElementById('routeSuggestions').classList.contains('active'),
+                safetyTips: document.getElementById('safetyTips').classList.contains('active'),
+                emailNotifications: document.getElementById('emailNotifications').classList.contains('active')
+            };
+            
+            console.log('Saving notification settings:', settings);
+            settingsManager.showNotification('Notification settings saved successfully!');
+        }
+        
+        function savePrivacySettings() {
+            const settings = {
+                locationTracking: document.getElementById('locationTracking').classList.contains('active'),
+                routeHistory: document.getElementById('routeHistory').classList.contains('active'),
+                anonymousAnalytics: document.getElementById('anonymousAnalytics').classList.contains('active'),
+                sessionTimeout: document.getElementById('sessionTimeout').value
+            };
+            
+            console.log('Saving privacy settings:', settings);
+            settingsManager.showNotification('Privacy settings saved successfully!');
+        }
+        
+        function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                settingsManager.showNotification('Please fill in all password fields', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                settingsManager.showNotification('New passwords do not match', 'error');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                settingsManager.showNotification('Password must be at least 6 characters long', 'error');
+                return;
+            }
+            
+            // In a real app, this would send the password change request to the backend
+            settingsManager.showNotification('Password changed successfully!');
+            
+            // Clear password fields
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }
+        
+        function setup2FA() {
+            alert('Two-Factor Authentication setup would be implemented here');
+        }
+        
+        function exportData() {
+            alert('Data export functionality would be implemented here');
+        }
+        
+        function clearHistory() {
+            if (confirm('Are you sure you want to clear your route history? This action cannot be undone.')) {
+                settingsManager.showNotification('Route history cleared successfully!');
+            }
+        }
+        
+        function deactivateAccount() {
+            if (confirm('Are you sure you want to deactivate your account? You can reactivate it by logging in again.')) {
+                alert('Account deactivation functionality would be implemented here');
+            }
+        }
+        
+        function deleteAccount() {
+            if (confirm('Are you sure you want to permanently delete your account? This action cannot be undone and all your data will be lost.')) {
+                if (confirm('This action is irreversible. Are you absolutely sure?')) {
+                    alert('Account deletion functionality would be implemented here');
+                }
+            }
+        }
+        
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+            }
+        }
+    </script>
+</body>
+</html>

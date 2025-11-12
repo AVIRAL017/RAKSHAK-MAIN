@@ -1,0 +1,42 @@
+event_id,year,month,day,latitude,longitude,location,region,magnitude,depth_km,earthquake_type,fault_type,tsunami_generated,tsunami_height_m,tsunami_intensity,flood_risk_index,population_density,seismic_zone,building_vulnerability,economic_risk,casualties,infrastructure_damage_million_usd,ocean_proximity_km,plate_boundary_type
+IND20000126,2000,1,26,23.5,70.5,Kutch,Gujarat,6.5,15,Interplate,Thrust,No,0,None,0.6,Medium,Zone V,High,Medium,45,12.5,50,Continental-Continental
+IND20000918,2000,9,18,27.5,88.5,Gangtok,Sikkim,6.8,19,Interplate,Thrust,No,0,None,0.4,Low,Zone IV,Medium,Low,78,25.8,200,Continental-Continental
+IND20010311,2001,3,11,10.5,92.5,Andaman Islands,Andaman,6.7,12,Interplate,Thrust,Yes,2.5,Moderate,0.8,Low,Zone V,High,High,12,8.3,5,Oceanic-Continental
+IND20010918,2001,9,18,28.7,77.2,Delhi,Delhi,4.5,8,Intraplate,Normal,No,0,None,0.3,Very High,Zone IV,Very High,Medium,2,1.2,300,Intraplate
+IND20020411,2002,4,11,19.2,84.7,Gopalpur,Odisha,6.6,15,Interplate,Thrust,Yes,1.8,Weak,0.7,Medium,Zone III,Medium,Medium,15,5.6,2,Oceanic-Continental
+IND20020521,2002,5,21,11.7,92.7,Port Blair,Andaman,6.9,10,Interplate,Thrust,Yes,3.2,Strong,0.8,Low,Zone V,High,High,8,4.2,1,Oceanic-Continental
+IND20030416,2003,4,16,35.2,77.3,Leh,Ladakh,6.2,25,Interplate,Strike-slip,No,0,None,0.2,Low,Zone IV,Low,Low,3,0.8,500,Continental-Continental
+IND20031226,2003,12,26,8.5,92.5,Great Nicobar,Andaman,7.2,12,Interplate,Thrust,Yes,4.5,Strong,0.9,Low,Zone V,High,High,25,15.8,2,Oceanic-Continental
+IND20040928,2004,9,28,26.8,92.8,Tezpur,Assam,6.4,18,Interplate,Thrust,No,0,None,0.5,Medium,Zone V,Medium,Medium,22,7.4,150,Continental-Continental
+IND20041226,2004,12,26,3.5,96,Sumatra Coast,Indian Ocean,9.1,10,Interplate,Megathrust,Yes,15.8,Destructive,1,Medium,Zone V,Very High,Very High,12500,2800.5,0,Oceanic-Continental
+IND20050328,2005,3,28,15.5,73.8,Goa,Goa,5.8,12,Intraplate,Normal,No,0.8,Weak,0.6,High,Zone III,Medium,Medium,5,2.1,0,Intraplate
+IND20051008,2005,10,8,34.5,73.6,Kashmir,Pakistan-India,7.6,10,Interplate,Thrust,No,0,None,0.5,Medium,Zone V,High,High,85000,3500.2,300,Continental-Continental
+IND20060425,2006,4,25,28.2,84.7,Kathmandu Region,Nepal Border,6.8,8,Interplate,Thrust,No,0,None,0.7,High,Zone V,High,High,218,145.3,250,Continental-Continental
+IND20060912,2006,9,12,10.9,92.3,Car Nicobar,Andaman,7,11,Interplate,Thrust,Yes,3.8,Strong,0.9,Low,Zone V,High,High,6,9.7,1,Oceanic-Continental
+IND20070103,2007,1,3,24.5,91.2,Agartala,Tripura,6.3,16,Interplate,Thrust,No,0.3,Weak,0.5,Medium,Zone V,Medium,Medium,18,6.8,180,Continental-Continental
+IND20070913,2007,9,13,12.5,92.9,Little Andaman,Andaman,7.3,13,Interplate,Thrust,Yes,4.2,Strong,0.8,Low,Zone V,High,High,8,12.5,2,Oceanic-Continental
+IND20080220,2008,2,20,21.3,84,Sambalpur,Odisha,5.9,14,Intraplate,Normal,No,0,None,0.4,Medium,Zone III,Medium,Low,7,3.2,120,Intraplate
+IND20080916,2008,9,16,23,70.5,Bhuj Region,Gujarat,6.1,17,Interplate,Thrust,No,1.2,Weak,0.6,Medium,Zone V,High,Medium,34,15.2,50,Continental-Continental
+IND20090407,2009,4,7,26.5,92.8,Guwahati,Assam,6,20,Interplate,Thrust,No,0.4,Weak,0.5,High,Zone V,High,Medium,28,11.5,200,Continental-Continental
+IND20090930,2009,9,30,19.1,72.8,Mumbai Region,Maharashtra,5.2,10,Intraplate,Normal,No,0.9,Weak,0.7,Very High,Zone III,Very High,High,45,28.9,0,Intraplate
+IND20100227,2010,2,27,9.2,92.8,Great Nicobar,Andaman,7.1,9,Interplate,Thrust,Yes,4.8,Strong,0.9,Low,Zone V,High,High,3,12.3,1,Oceanic-Continental
+IND20110311,2011,3,11,38,142.5,Tohoku Region,Pacific,9.1,20,Interplate,Megathrust,Yes,12.5,Destructive,0.9,Medium,Zone V,High,Very High,158,45.8,0,Oceanic-Continental
+IND20110918,2011,9,18,28.6,77.1,Delhi NCR,Delhi,4.8,6,Intraplate,Normal,No,0,None,0.3,Very High,Zone IV,Very High,Medium,12,8.7,300,Intraplate
+IND20120411,2012,4,11,2.5,93,Offshore Sumatra,Indian Ocean,8.6,15,Interplate,Strike-slip,Yes,3.5,Strong,0.8,Low,Zone V,High,High,5,8.9,0,Oceanic-Continental
+IND20130206,2013,2,6,22.3,70.8,Jamnagar,Gujarat,6,15,Interplate,Thrust,No,1.8,Weak,0.6,Medium,Zone V,High,Medium,23,9.8,45,Continental-Continental
+IND20131117,2013,11,17,12.5,92.9,Little Andaman,Andaman,6.8,13,Interplate,Thrust,Yes,3.2,Strong,0.8,Low,Zone V,High,High,5,7.2,2,Oceanic-Continental
+IND20140425,2014,4,25,28.2,84.7,Kathmandu Region,Nepal Border,7.8,8,Interplate,Thrust,No,0,None,0.7,High,Zone V,High,High,8962,6500.8,250,Continental-Continental
+IND20150512,2015,5,12,27.8,86.1,Mount Everest Region,Nepal-India,7.3,8,Interplate,Thrust,No,0,None,0.6,Low,Zone V,High,High,218,125.6,300,Continental-Continental
+IND20160104,2016,1,4,24.5,91.2,Agartala,Tripura,6.7,16,Interplate,Thrust,No,0.3,Weak,0.5,Medium,Zone V,Medium,Medium,18,6.8,180,Continental-Continental
+IND20170206,2017,2,6,21.3,84,Sambalpur,Odisha,5.9,14,Intraplate,Normal,No,0,None,0.4,Medium,Zone III,Medium,Low,7,3.2,120,Intraplate
+IND20180425,2018,4,25,10.9,92.3,Car Nicobar,Andaman,7.2,11,Interplate,Thrust,Yes,4.5,Strong,0.9,Low,Zone V,High,High,6,9.7,1,Oceanic-Continental
+IND20190612,2019,6,12,23,70.5,Bhuj Region,Gujarat,6.3,17,Interplate,Thrust,No,1.5,Weak,0.6,Medium,Zone V,High,Medium,34,15.2,50,Continental-Continental
+IND20200213,2020,2,13,26.5,92.8,Guwahati,Assam,6.1,20,Interplate,Thrust,No,0.4,Weak,0.5,High,Zone V,High,Medium,28,11.5,200,Continental-Continental
+IND20210321,2021,3,21,19.1,72.8,Mumbai Region,Maharashtra,5.5,10,Intraplate,Normal,No,0.9,Weak,0.7,Very High,Zone III,Very High,High,45,28.9,0,Intraplate
+IND20211231,2021,12,31,9.2,92.8,Great Nicobar,Andaman,7.4,9,Interplate,Thrust,Yes,5.2,Strong,0.9,Low,Zone V,High,High,3,12.3,1,Oceanic-Continental
+IND20220508,2022,5,8,28.6,77.1,Delhi NCR,Delhi,5,6,Intraplate,Normal,No,0,None,0.3,Very High,Zone IV,Very High,Medium,12,8.7,300,Intraplate
+IND20230206,2023,2,6,22.3,70.8,Jamnagar,Gujarat,6.2,15,Interplate,Thrust,No,1.9,Weak,0.6,Medium,Zone V,High,Medium,23,9.8,45,Continental-Continental
+IND20231117,2023,11,17,12.5,92.9,Little Andaman,Andaman,7,13,Interplate,Thrust,Yes,4.1,Strong,0.8,Low,Zone V,High,High,5,7.2,2,Oceanic-Continental
+IND20240115,2024,1,15,26.4,92.9,Tezpur,Assam,6.5,16,Interplate,Thrust,No,0.6,Weak,0.5,Medium,Zone V,Medium,Medium,31,13.4,150,Continental-Continental
+IND20240622,2024,6,22,15.4,73.8,Goa Coast,Goa,6.1,11,Intraplate,Normal,No,1.2,Weak,0.7,High,Zone III,Medium,Medium,8,4.6,0,Intraplate
+IND20250315,2025,3,15,10.5,92.5,Andaman Islands,Andaman,7.6,12,Interplate,Thrust,Yes,6.8,Strong,0.9,Low,Zone V,High,High,15,25.8,2,Oceanic-Continental
